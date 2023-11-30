@@ -1,0 +1,45 @@
+<h1>Real Time Products
+</h1>
+
+
+<div class="container">
+    <div class="container-forms">
+        <div>
+            <h2>AGREGAR PRODUCTO</h2>
+            <form id="addProductForm">
+                <p>TITLE: <input name="title"  type="text"></p>
+                <p>DESCRIPTION: <input name="description"  type="text"></p>
+                <p>CODE: <input name="code"  type="text"></p>
+                <p>PRICE: <input name="price"  type="number"></p>
+                <p>CATEGORY: <input name="category" type="text"></p>
+                <button type="submit">Agregar Producto  </button>
+            </form>
+        </div>
+        <div id="resFetch"></div>
+
+        <div>
+            <h2>BORRAR PRODUCTO</h2>
+            <form id="deleteProductForm">
+                <p>ID<input id="deleteID" type="number"></p>
+                <button type="submit">BORRAR</button>
+            </form>
+        </div>
+
+        </div>
+    </div>
+        <div id="container-products">
+            {{#each products}}
+            <div>
+                <ul>
+                    <li>
+                        <h4>
+                            {{this.title}} <br>
+                            code: {{this.code}} <br>
+                            ID: {{this.id}}
+                        </h4>
+                    </li>
+            </div>
+            {{/each}}
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/realTimeProducts.js"></script>

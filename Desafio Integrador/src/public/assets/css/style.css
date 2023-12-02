@@ -1,0 +1,50 @@
+.title{
+    display: flex;
+    justify-content: center;
+}
+
+.container-index{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray;
+}
+
+.container-forms{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30%;
+    padding: 10px;
+    margin: 10px;
+}
+
+li{
+    background-color: lightcoral;
+    font-size: 20px;
+} 
+
+p{
+    font-size: 25px;
+}
+
+input{
+    width: 70%;
+    height: 25px;
+}
+
+button{
+    background-color: lightblue;
+    width: 150px !important;
+    height: 50px;
+}

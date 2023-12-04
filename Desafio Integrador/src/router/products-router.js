@@ -17,7 +17,7 @@ const managerProducts = new ManagerProducts();
 const upload = multer();
 
 /* castear id */
-function idValid(id) {
+function idValid(id,res) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({
             error: "Ingrese un ID valido"
@@ -115,3 +115,67 @@ router.post("/", upload.none(), async (req, res) => {
         return res.status(500).json({error: error.message })
     }
 });
+
+
+
+router.put('/:id', async (req,res)=>{
+    try {
+        let {
+            id
+        } = req.params;
+        let valid = idValid(id);
+        if (valid) {
+            return null;
+        }
+
+        let getProductById = await managerProducts.getProductById(id);
+        if (!getProductById) {
+            console.log("Error en busqueda por ID");
+            return null;
+        }
+
+        if(req.body._id){
+            return res.status(404).json({error: 'no se puede modificar la propiedad _id' })
+        }
+
+        let putProduct = await managerProducts.updateProduct(id, req.body)
+        if(!putProduct){
+             res.status(404).json({error: 'error al modificar' })
+             return null
+        }
+        io.emit('listProduct', await managerProducts.getProducts())
+        return res.status(200).json({putProduct})
+    } catch (error) {
+     return res.status(500).json({error: error.message }) 
+    }
+})
+
+
+router.delete('/:id', async(req, res) =>{
+    try {
+        let {
+            id
+        } = req.params;
+        let valid = idValid(id);
+        if (valid) {
+            return null;
+        }
+
+        let getProductById = await managerProducts.getProductById(id);
+        if (!getProductById) {
+            console.log("Error en busqueda por ID");
+            return null;
+        }
+
+        let prodDeleted = await productsModel.updateOne(getProductById, {$set: {status: false}})
+
+        if(!prodDeleted){
+            console.log('error en eliminacion')
+            return null
+        }
+        io.emit('listProduct', await managerProducts.getProducts())
+        return res.status(200).json({prodDeleted})
+    } catch (error) {
+     return res.status(500).json({error: error.message })   
+    }
+}) 

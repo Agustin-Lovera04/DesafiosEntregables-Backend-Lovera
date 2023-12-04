@@ -1,0 +1,30 @@
+<h1>Carts</h1>
+<br />
+<div>
+  <h2>CREAR CARRITO</h2>
+  <form id="createCartForm">
+    <p>TITULO<input id="cartTitle" name ='title'type="text" /></p>
+    <button type="submit">CREAR</button>
+  </form>
+</div>
+<div><h2>Accion realizada:</h2><div id="resFetch"></div></div>
+
+<div id="containerCarts">
+
+{{#each carts}}
+  <div>
+    <ul>
+      <li>
+        <h4>
+          {{this.title}}
+          ID:
+          {{this.id}}
+        </h4>
+      </li>
+    </ul>
+  </div>
+{{/each}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/viewCarts.js"></script>

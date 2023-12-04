@@ -3,7 +3,7 @@ import { productsModel } from "../models/productsModel.js";
 export class ManagerProducts{
     async getProducts(){
         try {
-            let products = await productsModel.find()
+            let products = await productsModel.find({status: true})
                 return products
         } catch (error) {
             console.log(error.message)
@@ -15,7 +15,6 @@ export class ManagerProducts{
     async createProduct(title, description, code, price, stock, category, thumbnail){
         try {
             let newProduct = await productsModel.create({title:title, description:description, code:code, price:Number(price), stock:Number(stock), category:category, thumbnail:thumbnail}) 
-            console.log(newProduct)
             return newProduct
         } catch (error) {
             console.log(error.message)

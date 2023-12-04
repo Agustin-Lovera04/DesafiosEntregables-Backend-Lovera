@@ -15,7 +15,15 @@
                 <button type="submit">Agregar Producto </button>
             </form>
         </div>
-        <div id="resFetch"><h2>Accion realizada:</h2></div>
+        <div>
+            <h2>BORRAR PRODUCTO</h2>
+            <form id="deleteProductForm">
+                <p>ID<input id="deleteID" type="text"></p>
+                <button type="submit">BORRAR</button>
+            </form>
+        </div>
+    </div>
+        <div><h2>Accion realizada:</h2><div id="resFetch"></div></div>
         <div id="container-products">
 
             {{#each products}}

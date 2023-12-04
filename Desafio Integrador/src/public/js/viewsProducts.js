@@ -17,7 +17,7 @@ formAdd.addEventListener('submit', async (e) => {
         .then(response => response.json())
         .then(data => {
             console.log('fetch enviado');
-            resFetch.innerHTML += `<p>Producto Agregado</p>`;
+            resFetch.innerHTML = `<p>Producto Agregado</p>`;
 
 
             formAdd.reset();
@@ -48,3 +48,24 @@ socket.on('listProduct', (products) => {
         containerProd.innerHTML += listMod;
     });
 });
+
+
+const deleteForm = document.getElementById('deleteProductForm')
+deleteForm.addEventListener('submit', e =>{
+    e.preventDefault()
+    let deleteID = document.getElementById('deleteID').value
+    console.log(deleteID)
+    try {
+        fetch(`http://localhost:8080/api/products/${deleteID}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('fetch enviado');
+            resFetch.innerHTML = '<p>Producto Eliminado</p>'
+
+            deleteForm.reset();
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }})

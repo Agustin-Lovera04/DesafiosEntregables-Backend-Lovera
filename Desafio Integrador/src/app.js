@@ -3,7 +3,7 @@
     import { router as viewsRouter } from './router/viewsRouter.js';
     import { Server } from 'socket.io';
     import { router as productManagerRouter } from './router/products-router.js';
-    /* import { router as cartManagerRouter } from './router/carts-router.js';  */
+    import { router as cartManagerRouter } from './router/carts-router.js'; 
     import { __dirname } from './utils.js';
     import mongoose from 'mongoose'
 
@@ -33,7 +33,7 @@
 
     /* REDIRECCIONES */
     app.use('/api/products', productManagerRouter)
-    /* app.use('/api/carts', cartManagerRouter) */
+    app.use('/api/carts', cartManagerRouter) 
     app.use('/', viewsRouter)
 
     const serverHTTP=app.listen(PORT,()=>{

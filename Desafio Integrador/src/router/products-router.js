@@ -11,7 +11,7 @@ import multer from "multer";
 import mongoose from "mongoose";
 import { io } from "../app.js";
 export const router = Router();
-const managerProducts = new ManagerProducts();
+export const managerProducts = new ManagerProducts();
 
 /* MANEJO FORM DATA */
 const upload = multer();

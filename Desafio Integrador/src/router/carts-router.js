@@ -6,7 +6,7 @@ import {
 import multer from "multer";
 import mongoose from "mongoose";
 import { io } from "../app.js";
-import { ManagerProducts } from '../dao/managerMongo/managerProductsMongo.js';
+import { managerProducts } from './products-router.js';
 export const router=Router()
 const managerCarts = new ManagerCarts()
 const upload = multer();
@@ -66,6 +66,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post('/:cid/product/:pid', async (req, res) => {
+    console.log('entro a la ruta')
     try {
         let { cid } = req.params;
         let valid = idValid(cid, res);
@@ -79,8 +80,9 @@ router.post('/:cid/product/:pid', async (req, res) => {
             console.log('pid invalido')
             return null;
         }
-
-        const product = ManagerProducts.getProductById(pid)
+        console.log('cid y pid'+cid+' '+pid)
+        const product = await managerProducts.getProductById(pid)
+        console.log('product:'+product)
         if(!product){
             console.log('error en recuperacion de producto')
             return null
@@ -91,10 +93,10 @@ router.post('/:cid/product/:pid', async (req, res) => {
             console.log('fallo el agregado de producto')
             return null
         }
-
+        console.log('carro modificado: '+cartMod)
         return res.status(200).json({cartMod})
     } catch (error) {
-        
+        return res.status(500).json({error: error.message })
     }
 })
 

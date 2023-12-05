@@ -24,6 +24,7 @@ export class ManagerProducts{
 
 
     async getProductById(id){
+        console.log('entro a buscar')
         let getProduct
         try {
             getProduct = await productsModel.findOne({status:true, _id:id})
@@ -70,8 +71,8 @@ export class ManagerProducts{
 
         let prodDeleted
             try {
-                prodMod = await productsModel.updateOne(getProduct, {$set: {status: false}})
-                if(prodMod.modifiedCount>0){
+                prodDeleted = await productsModel.updateOne(getProduct, {$set: {status: false}})
+                if(prodDeleted.modifiedCount>0){
                     console.log('Desactivado')
                     return prodDeleted
                 }

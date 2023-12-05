@@ -1,6 +1,5 @@
 <h1>DETALLE CARRITO:</h1>
-<hr>
-
+<hr />
 
 <div>
     <ul>
@@ -8,17 +7,16 @@
             <h4 class="detailCart">
                 <div>Titulo: {{cart.title}}</div>
                 <div>
-                ID: {{cart._id}}
+                    ID:
+                    {{cart._id}}
                 </div>
+                    Productos en carrito:<br />
                 <div>
-                Productos:
-                {{#if cart.products.default}}
-                    {{#each cart.products.default}}
-                        {{this}},
+                    {{#each cart.products}}
+                    Id producto: {{this.product}}<br />Cantidad:
+                    {{this.quantity}}
+                    <hr />
                     {{/each}}
-                {{else}}
-                    No hay productos disponibles.
-                {{/if}}
                 </div>
             </h4>
         </li>

@@ -37,39 +37,54 @@ export class ManagerCarts{
 
 
 
-    async addProductInCart(cid, product){
-        console.log('entro a addproduct')
-        let getCart
+    async addProductInCart(cid, product) {
+        console.log('entro a addproduct');
         try {
-            getCart = await cartsModel.findOne({status:true, _id:cid})
-            if(!getCart){
-                console.log('no se encontro carrito')
+            let getCart = await cartsModel.findOne({ status: true, _id: cid });
+            if (!getCart) {
+                console.log('no se encontro carrito');
+                return null;
             }
-        let productInCart = getCart.products.find((prod)=> prod.product._id === product._id)
-        if(productInCart){
-            productInCart.quantity++
-            return
-        }
-
-        getCart.products.products.push({
-            product: product,
-            quantity: 1
-        })
-        try {
-            let cartMod = await cartsModel.updateOne({getCart, getCart})
-            console.log(cartMod)
-            if(cartMod.modifiedCount>0){
-                console.log('Modificado')
-                return cartMod
+    
+            console.log('carrito: ' + getCart);
+    
+            if (!getCart.products || !Array.isArray(getCart.products)) {
+                console.log('La estructura de productos en el carrito es incorrecta');
+                return null;
             }
-        } catch (error) {
-            console.log('error al modificar')
-            return null
-        }
+    
+       let productInCart = getCart.products.find((prod) => prod.product._id.toString() === product._id.toString());
 
+
+    
+            console.log('productInCart:' + productInCart);
+            if (productInCart) {
+                productInCart.quantity++;
+            } else {
+                getCart.products.push({
+                    product: product._id,
+                    quantity: 1
+                });
+            }
+    
+            console.log('carro mod ' + getCart);
+            try {
+                let cartMod = await cartsModel.updateOne({ _id: cid }, { products: getCart.products });
+                console.log(cartMod);
+                if (cartMod.modifiedCount > 0) {
+                    console.log('Modificado');
+                    let cart = await cartsModel.findOne({ _id: cid})
+                    return cart;
+                }
+            } catch (error) {
+                console.log('error al modificar', error);
+                return null;
+            }
+    
         } catch (error) {
-            return null 
+            console.log(error.message);
+            return null;
         }
     }
-
+    
 }

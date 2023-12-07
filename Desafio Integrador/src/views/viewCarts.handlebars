@@ -1,29 +1,45 @@
-<h1>Carts</h1>
-<br />
-<div>
-  <h2>CREAR CARRITO</h2>
-  <form id="createCartForm">
-    <p>TITULO<input id="cartTitle" name ='title'type="text" /></p>
-    <button type="submit">CREAR</button>
-  </form>
-</div>
-<div><h2>Accion realizada:</h2><div id="resFetch"></div></div>
+<h1 class="text-center mt-4">Carts</h1>
+<hr />
 
-<div id="containerCarts">
+<div class="container mt-4">
 
-{{#each carts}}
-  <div>
-    <ul>
-      <li>
-        <h4>
-          {{this.title}}
-          ID:
-          {{this.id}}
-        </h4>
-      </li>
-    </ul>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">CREAR CARRITO</h2>
+          <form id="createCartForm">
+            <div class="mb-3">
+              <label for="cartTitle" class="form-label">TITULO</label>
+              <input
+                id="cartTitle"
+                name="title"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">CREAR</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mt-3">
+      <h2>Accion realizada:</h2>
+      <div id="resFetch"></div>
+    </div>
   </div>
-{{/each}}
+
+  <div id="containerCarts" class="mt-4">
+    {{#each carts}}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h4 class="card-title">{{this.title}}</h4>
+          <p class="card-text">ID: {{this.id}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

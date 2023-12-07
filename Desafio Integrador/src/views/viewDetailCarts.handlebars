@@ -1,26 +1,24 @@
-<h1>DETALLE CARRITO:</h1>
+<h1 class="text-center mt-4">DETALLE CARRITO:</h1>
 <hr />
 
-<div>
-    <ul>
-        <li>
-            <h4 class="detailCart">
-                <div>Titulo: {{cart.title}}</div>
-                <div>
-                    ID:
-                    {{cart._id}}
-                </div>
-                    Productos en carrito:<br />
-                <div>
-                    {{#each cart.products}}
-                    Id producto: {{this.product}}<br />Cantidad:
-                    {{this.quantity}}
-                    <hr />
-                    {{/each}}
-                </div>
-            </h4>
-        </li>
-    </ul>
+<div class="card mt-3">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <h4 class="detailCart">
+        <div>Titulo: {{cart.title}}</div>
+        <div>ID: {{cart._id}}</div>
+        <br /><br />Productos en carrito:<hr />
+        <div>
+          {{#each cart.products}}
+            Id producto:
+            {{this.product}}<br />Cantidad:
+            {{this.quantity}}
+            <hr />
+          {{/each}}
+        </div>
+      </h4>
+    </li>
+  </ul>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

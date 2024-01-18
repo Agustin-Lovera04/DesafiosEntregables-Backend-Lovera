@@ -12,7 +12,8 @@ import mongoose from "mongoose";
 import {
   io
 } from "../app.js";
-/* import { auth } from "./viewsRouter.js"; */
+import { auth } from "./viewsRouter.js";
+import { passportCall } from "../utils.js";
 export const router = Router();
 export const managerProducts = new ManagerProducts();
 
@@ -28,7 +29,7 @@ function idValid(id, res) {
   }
 }
 
-router.get("/"/* , auth */,async (req, res) => {
+router.get("/", passportCall('jwt'),async (req, res) => {
   let user = req.user
 
   try {
@@ -83,7 +84,7 @@ router.get("/"/* , auth */,async (req, res) => {
   }
 });
 
-router.get("/:id" /*, auth */,async (req, res) => {
+router.get("/:id", passportCall('jwt'),async (req, res) => {
   try {
     let {
       id
@@ -108,7 +109,7 @@ router.get("/:id" /*, auth */,async (req, res) => {
   }
 });
 
-router.post("/"/*,  auth */,upload.none(), async (req, res) => {
+router.post("/", passportCall('jwt'),upload.none(), async (req, res) => {
   try {
     let {
       title,
@@ -158,7 +159,7 @@ router.post("/"/*,  auth */,upload.none(), async (req, res) => {
   }
 });
 
-router.put("/:id"/* , auth */,async (req, res) => {
+router.put("/:id", passportCall('jwt'),async (req, res) => {
   try {
     let {
       id
@@ -198,7 +199,7 @@ router.put("/:id"/* , auth */,async (req, res) => {
   }
 });
 
-router.delete("/:id"/*,  auth */,async (req, res) => {
+router.delete("/:id", passportCall('jwt'),async (req, res) => {
   try {
     let {
       id

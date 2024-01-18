@@ -118,3 +118,13 @@ body {
     color: #28a745;
   }
   
+
+  /* Seleccionador registro */
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat;
+    background-position: right 8px top 50%;
+    background-size: 12px;
+}

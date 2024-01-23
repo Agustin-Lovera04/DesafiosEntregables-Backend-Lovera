@@ -35,3 +35,24 @@ router.get('/current',passportCall('jwt'),(req,res)=>{
   res.status(200).render('perfil', {user});
 
 });
+
+/* ENDPOINT PARA PROBAR SEGURIDAD */
+router.get('/support', passportCall('jwt'), /* securityAccess(req.user), */(req,res)=>{
+  res.render('support')
+})
+
+/* ERROR HANDLEBAR GENERAL */
+router.get('/errorHandlebars', (req,res)=>{
+ let {error} = req.query
+  res.render('errorHandlebars', {error})
+})
+
+/* ERROR SERVIDOR */
+router.get('/errorServer', (req,res)=>{
+  res.render('errorServer')
+})
+
+/* TOMA ENDPOINT ENPOINT ERRONEO */
+router.get('*', (req,res)=>{
+  res.render('404')
+})

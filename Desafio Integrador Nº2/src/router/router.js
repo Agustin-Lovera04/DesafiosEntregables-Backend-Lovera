@@ -21,6 +21,14 @@ export class MyRouter{
         this.router.post(ruta, this.myAnswers,(ruta !=='/login' && ruta !=='/registro' && ruta !=='/github'&& !ruta.includes('/callbackGithub'))?passportCall('jwt'):(req,res,next)=>{next()}, this.access(permissions),this.agregaTryCatch(functions))
     }
 
+    put(ruta, permissions,...functions){ 
+        this.router.post(ruta, this.myAnswers,(ruta !=='/login' && ruta !=='/registro' && ruta !=='/github'&& !ruta.includes('/callbackGithub'))?passportCall('jwt'):(req,res,next)=>{next()}, this.access(permissions),this.agregaTryCatch(functions))
+    }
+
+    delete(ruta, permissions,...functions){ 
+        this.router.post(ruta, this.myAnswers,(ruta !=='/login' && ruta !=='/registro' && ruta !=='/github'&& !ruta.includes('/callbackGithub'))?passportCall('jwt'):(req,res,next)=>{next()}, this.access(permissions),this.agregaTryCatch(functions))
+    }
+
     myAnswers=(req, res, next)=>{
         res.success=(response)=>res.status(200).json({status:"OK", response})
         res.successNewUser=(response, user)=>res.status(201).json({status:"OK", response, user})

@@ -23,9 +23,11 @@ const upload = multer();
 /* castear id */
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({
+    /* return res.status(404).json({
       error: "Ingrese un ID valido",
-    });
+    }); */
+    let error= 'Ingrese un Id Valido'
+    return res.redirect(`/errorHandlebars/?error=${error}`)
   }
 }
 
@@ -89,7 +91,7 @@ router.get("/:id", passportCall('jwt'),async (req, res) => {
     let {
       id
     } = req.params;
-    let valid = idValid(id);
+    let valid = idValid(id, res);
     if (valid) {
       return null;
     }

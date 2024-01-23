@@ -80,6 +80,11 @@ export const initPassport = () => {
         if(!username || !password){
           return done (null, false, {message: 'Complete los datos'})
         }
+        let regMail=/^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
+          console.log(regMail.test(username))
+          if(!regMail.test(username)){
+              return done(null, false, {message: 'Ingrese un mail Valido'})
+          }
 
         let user = await userModel.findOne({email:username}).lean()
         if(!user){
@@ -87,7 +92,7 @@ export const initPassport = () => {
         }
         
         if(!validPassword(user, password)){
-          console.log(password)
+
           return done(null,false, {message:'Datos Invalidos'})
         }
 
@@ -115,12 +120,12 @@ export const initPassport = () => {
   ))
 
 passport.use('github', new github.Strategy(
-    {   /*      clientID: 'Iv1.2581244253dcd9ee',
+    {         clientID: 'Iv1.2581244253dcd9ee',
         clientSecret:'3d422d408c339ba7fca72c0e2e20a697ae67ef35',
-        callbackURL:'http://localhost:8080/api/sessions/callbackGithub' */ 
-        clientID: '',
+        callbackURL:'http://localhost:8080/api/sessions/callbackGithub'  
+/*         clientID: '',
         clientSecret:'',
-        callbackURL:''  
+        callbackURL:''   */
     },
     async( accesToken,refreshToken,profile,done)=>{
         try {

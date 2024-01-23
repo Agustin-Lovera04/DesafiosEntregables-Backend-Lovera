@@ -5,7 +5,8 @@ import { Server } from "socket.io";
 import { router as productManagerRouter } from "./router/products-router.js";
 import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
-import { SessionsRouter } from "./router/sessions-router.js";
+import { router as sessionsManagerRouter } from "./router/sessions-router.js";
+/* import { SessionsRouter } from "./router/sessions-router.js"; */
 import { __dirname } from "./utils.js";
 import { chatManager } from "./dao/managerMongo/chatManager.js";
 import sessions from 'express-session'
@@ -18,7 +19,7 @@ import cookieParser from 'cookie-parser'
 const PORT = 8080;
 
 const app = express();
-export const sessionsRouter = new SessionsRouter()
+/* export const sessionsRouter = new SessionsRouter() */
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -71,7 +72,8 @@ app.set("views", `${__dirname}/views`);
 app.use("/api/chat", chatManagerRouter);
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
-app.use("/api/sessions", sessionsRouter.getRouter())
+/* app.use("/api/sessions", sessionsRouter.getRouter()) */
+app.use('/api/sessions', sessionsManagerRouter)
 app.use("/", viewsRouter);
 
 const serverHTTP = app.listen(PORT, () => {

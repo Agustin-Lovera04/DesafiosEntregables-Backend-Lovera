@@ -1,0 +1,13 @@
+YA TENGO PASADO DE CUSTOM ROUTER A ROUTER NORMAL TODO LO DE SESSIONS
+yA TENGO ECHO EL MANEJO DE ERRORES EN LOGIN Y REGISTRO
+
+MANEJO DE ERRORES EN EL RESTO DE ENDPOINTS
+ ....................Ya lo  hice con el casteo de id en products, seguir esa forma--------------
+
+
+
+
+FALTARIAN MIDLES PERSONALIZADOS CLASE 23 ERA ( NO RECUERDO)
+
+
+--------------------------ESTO SE VA A FRENAR HASTA TERMINAR EL DESAFIO-------------------

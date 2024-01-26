@@ -10,6 +10,24 @@ export class ProductsService {
         return await ProductsDAO.getProductById(id)
      }
 
+     async createProduct(
+      title,
+      description,
+      code,
+      price,
+      stock,
+      category,
+      thumbnail
+      ){
+         return await ProductsDAO.createProduct(      title,
+            description,
+            code,
+            price,
+            stock,
+            category,
+            thumbnail)
+      }
+
 }
 import { ProductsDAO } from "../dao/productsDAO.js"
 export const productsService = new ProductsService(ProductsDAO)

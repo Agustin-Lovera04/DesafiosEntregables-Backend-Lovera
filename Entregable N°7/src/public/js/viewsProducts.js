@@ -7,22 +7,53 @@ formAdd.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const dataForm = new FormData(formAdd);
+  console.log('toco')
+  fetch("http://localhost:8080/api/products", {
+  method: "POST",
+  body: dataForm,
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("Server Response:", data);
   
-  try {
-    fetch("http://localhost:8080/api/products", {
-      method: "POST",
-      body: dataForm,
-    })
-    .then((response) => response.json())
-      .then((data) => {
-        console.log("fetch enviado");
-        resFetch.innerHTML = `<p>Producto Agregado</p>`;
+    // Removemos las clases 'alert-danger' y 'alert-success' de resFetch
+    resFetch.classList.remove('alert-danger', 'alert-success');
+  
+    if (data.error) {
+      let errorDiv = document.createElement('div');
+      errorDiv.classList.add('alert', 'alert-danger');
+      errorDiv.innerHTML = `${data.error}`;
+      
+      // Agregamos el div de error al elemento con id 'resFetch'
+      resFetch.innerHTML = '';  // Limpiamos cualquier contenido previo
+      resFetch.appendChild(errorDiv);
+    } else {
+      console.log("fetch enviado");
+  
+      // Agregamos la clase 'alert-success' al elemento con id 'resFetch'
+      resFetch.classList.add('alert', 'alert-success');
+  
+      resFetch.innerHTML = `<p>Producto Agregado</p>`;
+      formAdd.reset();
+    }
+  })
+  .catch((error) => {
+    console.error("Error in Fetch:", error);
+  
+    // Removemos las clases 'alert-danger' y 'alert-success' de resFetch
+    resFetch.classList.remove('alert-danger', 'alert-success');
+  
+    let errorDiv = document.createElement('div');
+    errorDiv.classList.add('alert', 'alert-danger');
+    errorDiv.innerHTML = `${error}`;
+    
+    // Agregamos el div de error al elemento con id 'resFetch'
+    resFetch.innerHTML = '';  // Limpiamos cualquier contenido previo
+    resFetch.appendChild(errorDiv);
+  });
+  
+  
 
-        formAdd.reset();
-      });
-  } catch (error) {
-    console.error("Error:", error);
-  }
 });
 
 socket.on("listProduct", (products) => {

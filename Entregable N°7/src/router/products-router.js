@@ -21,70 +21,19 @@ export const managerProducts = new ManagerProducts();
 /* MANEJO FORM DATA */
 const upload = multer();
 
-/* castear id */
+/* castear id 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    /* return res.status(404).json({
-      error: "Ingrese un ID valido",
-    }); */
     let error= 'Ingrese un Id Valido'
     return res.redirect(`/errorHandlebars/?error=${error}`)
   }
 }
-
+ */
 router.get("/", passportCall('jwt'),ProductsController.render);
 
 router.get("/:id", passportCall('jwt'),ProductsController.getProductById);
 
-router.post("/", passportCall('jwt'),upload.none(), async (req, res) => {
-  try {
-    let {
-      title,
-      description,
-      code,
-      price,
-      stock,
-      category,
-      thumbnail
-    } =
-    req.body;
-
-    if (!title || !description || !code || !price || !stock || !category) {
-      return "Faltan campos obligatorios para agregar el producto.";
-    }
-
-    let exReg = /[0-9]/;
-    if (exReg.test(title) || exReg.test(description) || exReg.test(category)) {
-      return res.status(400).json({
-        error: "Controlar error numerico en  los siguientes campos: title, description, code, category",
-      });
-    }
-
-    let confirmCreateProduct = await managerProducts.createProduct(
-      title,
-      description,
-      code,
-      price,
-      stock,
-      category,
-      thumbnail
-    );
-    if (!confirmCreateProduct) {
-      return res.status(404).json({
-        error: "error al crear"
-      });
-    }
-
-    io.emit("listProduct", await managerProducts.getProducts());
-    return res.status(200).json({
-      confirmCreateProduct
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: error.message
-    });
-  }
-});
+router.post("/", passportCall('jwt'),upload.none(), ProductsController.createProduct);
 
 router.put("/:id", passportCall('jwt'),async (req, res) => {
   try {

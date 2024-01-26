@@ -1,4 +1,5 @@
 import { productsService } from "../services/products.Service.js";
+import { io } from "../app.js";
 import mongoose from "mongoose";
 
 function idValid(id, res) {
@@ -14,7 +15,10 @@ export class ProductsController {
 
   static async render(req, res) {
     let user = req.user;
-
+    let error
+    if(req.error){
+      return res.redirect(`/api/products/?error=${req.error}`)
+      }
     try {
       let page = 1;
       if (req.query.page) {
@@ -54,6 +58,7 @@ export class ProductsController {
       }
 
       res.status(200).render("viewProducts", {
+        error: error,
         user: user,
         products: products.docs,
         totalPages: products.totalPages,
@@ -94,6 +99,62 @@ export class ProductsController {
       });
     }
   }
+
+  static async createProduct(req,res){
+    try {
+      let {
+        title,
+        description,
+        code,
+        price,
+        stock,
+        category,
+        thumbnail
+      } =
+      req.body;
+
+      console.log(title)
+  
+if (!title || !description || !code || !price || !stock || !category) {
+    return res.status(400).json({
+        error: "Faltan campos obligatorios para agregar el producto."
+    });
+}
+
+  
+      let exReg = /[0-9]/;
+      if (exReg.test(title) || exReg.test(description) || exReg.test(category)) {
+        return res.status(400).json({error: "Controlar error numerico en  los siguientes campos: title, description, code, category"
+       })}
+  
+      let confirmCreateProduct = await productsService.createProduct(
+        title,
+        description,
+        code,
+        price,
+        stock,
+        category,
+        thumbnail
+      );
+      if (!confirmCreateProduct) {
+        return res.status(404).json({
+          error: "error al crear"
+        });
+      }
+  
+      io.emit("listProduct", await productsService.getProducts());
+      return res.status(200).json({
+        confirmCreateProduct
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+  }
+
+
+
 
 
 

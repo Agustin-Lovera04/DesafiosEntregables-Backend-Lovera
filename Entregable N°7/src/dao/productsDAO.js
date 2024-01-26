@@ -72,4 +72,60 @@ export class ProductsDAO{
         }
       }
 
+
+      static async updateProduct(id, body) {
+        try {
+          const existingProduct = await productsModel.findOne({
+            status: true,
+            _id: id,
+          });
+          if (!existingProduct) {
+            console.log("No se encontro Producto con Id:" + id);
+            return null;
+          }
+    
+          /* Uso operadores, que dimos en clase $set */
+          const updatedProduct = await productsModel.updateOne(
+            { _id: id },
+            { $set: body }
+          );
+    
+          if (updatedProduct.modifiedCount > 0) {
+            console.log("Modificado");
+            return updatedProduct;
+          } else {
+            console.log("Ningún campo fue modificado");
+            return null;
+          }
+        } catch (error) {
+          console.log("Error en Update:", error.message);
+          return null;
+        }
+      }
+
+      static async deleteProduct(id) {
+        let getProduct;
+        try {
+          getProduct = await productsModel.findOne({ status: true, _id: id });
+          console.log("producto encontrado por id" + getProduct);
+    
+          let prodDeleted;
+          try {
+            prodDeleted = await productsModel.updateOne(getProduct, {
+              $set: { status: false },
+            });
+            if (prodDeleted.modifiedCount > 0) {
+              console.log("Desactivado");
+              return prodDeleted;
+            }
+          } catch (error) {
+            console.log("Error en Delete");
+            return null;
+          }
+        } catch (error) {
+          console.log("No se encontro Producto con Id:" + id);
+          return null;
+        }
+      }    
+
 }

@@ -28,6 +28,12 @@ export class ProductsService {
             thumbnail)
       }
 
+      async updateProduct(id, body){
+         return await ProductsDAO.updateProduct(id,body)
+      }
+      async deleteProduct(id){
+         return await ProductsDAO.deleteProduct(id)
+      }
 }
 import { ProductsDAO } from "../dao/productsDAO.js"
 export const productsService = new ProductsService(ProductsDAO)

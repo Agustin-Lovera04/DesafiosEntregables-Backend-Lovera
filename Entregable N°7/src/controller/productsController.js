@@ -4,9 +4,9 @@ import mongoose from "mongoose";
 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    let error= 'Ingrese un Id Valido'
-    console.log('error al validar')
-    return res.redirect(`/errorHandlebars/?error=${error}`)
+    let error = "Ingrese un Id Valido";
+    console.log("error al validar");
+    return res.redirect(`/errorHandlebars/?error=${error}`);
   }
 }
 
@@ -15,10 +15,10 @@ export class ProductsController {
 
   static async render(req, res) {
     let user = req.user;
-    let error
-    if(req.error){
-      return res.redirect(`/api/products/?error=${req.error}`)
-      }
+    let error;
+    if (req.error) {
+      return res.redirect(`/api/products/?error=${req.error}`);
+    }
     try {
       let page = 1;
       if (req.query.page) {
@@ -74,25 +74,20 @@ export class ProductsController {
     }
   }
 
-
-  static async getProductById(req,res){
+  static async getProductById(req, res) {
     try {
-      let {
-        id
-      } = req.params;
+      let { id } = req.params;
       let valid = idValid(id, res);
       if (valid) {
         return null;
       }
-  
+
       let getProductById = await productsService.getProductById(id);
       if (!getProductById) {
         console.log("Error en busqueda por ID");
         return null;
       }
-      res.status(200).render('viewDetailProduct',
-        {getProductById}
-      );
+      res.status(200).render("viewDetailProduct", { getProductById });
     } catch (error) {
       return res.status(500).json({
         error: error.message,
@@ -100,33 +95,33 @@ export class ProductsController {
     }
   }
 
-  static async createProduct(req,res){
+  static async createProduct(req, res) {
     try {
-      let {
-        title,
-        description,
-        code,
-        price,
-        stock,
-        category,
-        thumbnail
-      } =
-      req.body;
+      let { title, description, code, price, stock, category, thumbnail } =
+        req.body;
 
-      console.log(title)
-  
-if (!title || !description || !code || !price || !stock || !category) {
-    return res.status(400).json({
-        error: "Faltan campos obligatorios para agregar el producto."
-    });
-}
+      console.log(title);
 
-  
+      if (!title || !description || !code || !price || !stock || !category) {
+        return res.status(400).json({
+          error: "Faltan campos obligatorios para agregar el producto.",
+        });
+      }
+
       let exReg = /[0-9]/;
-      if (exReg.test(title) || exReg.test(description) || exReg.test(category)) {
-        return res.status(400).json({error: "Controlar error numerico en  los siguientes campos: title, description, code, category"
-       })}
-  
+      if (
+        exReg.test(title) ||
+        exReg.test(description) ||
+        exReg.test(category)
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Controlar error numerico en  los siguientes campos: title, description, code, category",
+          });
+      }
+
       let confirmCreateProduct = await productsService.createProduct(
         title,
         description,
@@ -138,13 +133,54 @@ if (!title || !description || !code || !price || !stock || !category) {
       );
       if (!confirmCreateProduct) {
         return res.status(404).json({
-          error: "error al crear"
+          error: "error al crear",
+        });
+      }
+
+      io.emit("listProduct", await productsService.getProducts());
+      return res.status(200).json({
+        confirmCreateProduct,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+      });
+    }
+  }
+
+
+  static async updateProduct(req,res){
+    try {
+      let {
+        id
+      } = req.params;
+      let valid = idValid(id);
+      if (valid) {
+        return null;
+      }
+  
+      let getProductById = await productsService.getProductById(id);
+      if (!getProductById) {
+        console.log("Error en busqueda por ID");
+        return null;
+      }
+  
+      if (req.body._id) {
+        return res.status(400).json({
+          error: "no se puede modificar la propiedad _id"
         });
       }
   
+      let putProduct = await productsService.updateProduct(id, req.body);
+      if (!putProduct) {
+        res.status(404).json({
+          error: "error al modificar"
+        });
+        return null;
+      }
       io.emit("listProduct", await productsService.getProducts());
       return res.status(200).json({
-        confirmCreateProduct
+        putProduct
       });
     } catch (error) {
       return res.status(500).json({
@@ -153,10 +189,38 @@ if (!title || !description || !code || !price || !stock || !category) {
     }
   }
 
+static async deleteProduct(req,res){
+  try {
+    let {
+      id
+    } = req.params;
+    let valid = idValid(id);
+    if (valid) {
+      return null;
+    }
 
+    let getProductById = await productsService.getProductById(id);
+    if (!getProductById) {
+      console.log("Error en busqueda por ID");
+      return null;
+    }
 
+    let prodDeleted = await productsService.deleteProduct(id)
 
-
+    if (!prodDeleted) {
+      console.log("error en eliminacion");
+      return null;
+    }
+    io.emit("listProduct", await productsService.getProducts());
+    return res.status(200).json({
+      prodDeleted
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+}
 
 
 }

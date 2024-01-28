@@ -3,11 +3,11 @@ export class ProductsService {
         this.dao = new dao()
     }
      async getProducts(limit,page,category,sort, disp){
-        return await ProductsDAO.getProducts(limit,page,category,sort, disp)
+        return await this.dao.getProducts(limit,page,category,sort, disp)
      }
 
      async getProductById(id){
-        return await ProductsDAO.getProductById(id)
+        return await this.dao.getProductById(id)
      }
 
      async createProduct(
@@ -19,7 +19,7 @@ export class ProductsService {
       category,
       thumbnail
       ){
-         return await ProductsDAO.createProduct(      title,
+         return await this.dao.createProduct(      title,
             description,
             code,
             price,
@@ -29,10 +29,10 @@ export class ProductsService {
       }
 
       async updateProduct(id, body){
-         return await ProductsDAO.updateProduct(id,body)
+         return await this.dao.updateProduct(id,body)
       }
       async deleteProduct(id){
-         return await ProductsDAO.deleteProduct(id)
+         return await this.dao.deleteProduct(id)
       }
 }
 import { ProductsDAO } from "../dao/productsDAO.js"

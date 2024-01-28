@@ -1,7 +1,7 @@
 import { productsModel } from "./models/productsModel.js";
 
 export class ProductsDAO{
-    static async getProducts(limit, page, category, sort, disp) {
+     async getProducts(limit, page, category, sort, disp) {
         try {
           /* establecemos un parametro general para simplificar luego simplicar el metodo a mongoose-- Idea de documentacion */
           let query;
@@ -32,7 +32,7 @@ export class ProductsDAO{
       }
     
 
-      static async getProductById(id) {
+       async getProductById(id) {
         console.log('entro')
         let getProduct;
         try {
@@ -46,7 +46,7 @@ export class ProductsDAO{
       }
     
 
-      static async createProduct(
+       async createProduct(
         title,
         description,
         code,
@@ -73,7 +73,7 @@ export class ProductsDAO{
       }
 
 
-      static async updateProduct(id, body) {
+       async updateProduct(id, body) {
         try {
           const existingProduct = await productsModel.findOne({
             status: true,
@@ -103,7 +103,7 @@ export class ProductsDAO{
         }
       }
 
-      static async deleteProduct(id) {
+      async deleteProduct(id) {
         let getProduct;
         try {
           getProduct = await productsModel.findOne({ status: true, _id: id });

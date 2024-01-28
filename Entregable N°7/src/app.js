@@ -8,9 +8,9 @@ import { router as chatManagerRouter } from "./router/chat-router.js";
 import { router as sessionsManagerRouter } from "./router/sessions-router.js";
 /* import { SessionsRouter } from "./router/sessions-router.js"; */
 import { __dirname } from "./utils.js";
-import { chatManager } from "./dao/managerMongo/chatManager.js";
+/* import { chatManager } from "./dao/managerMongo/chatManager.js";
 import sessions from 'express-session'
-import mongoStore from 'connect-mongo'
+import mongoStore from 'connect-mongo' */
 import mongoose from "mongoose";
 import { initPassport } from "./config/config.passport.js";
 import passport from "passport";

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { userModel } from "../dao/models/usersModel.js";
 import passport from "passport";
 import { genToken, hashearPass, passportCall, validPassword } from "../utils.js";
-import { MyRouter } from "./router.js";
+/* import { MyRouter } from "./router.js"; */
 export const router = Router();
 
 router.post('/registro', /* [public] */ passportCall('register'),async(req,res)=>{

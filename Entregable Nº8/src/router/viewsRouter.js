@@ -109,8 +109,9 @@ router.get('/errorHandlebars', securityAcces(["public"]),(req,res)=>{
 })
 router.get('/mockingproducts', passportCall('jwt'),securityAcces(["admin"]), async(req,res)=>{
   let fakeProducts = await Mocking.genProd()
+  let error /* = req.error */
 
-  res.render('mockingProducts', error, fakeProducts)
+  res.render('mockingProducts', {error, fakeProducts})
 })
 
 /* ERROR SERVIDOR */

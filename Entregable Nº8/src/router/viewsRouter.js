@@ -6,6 +6,8 @@ import { ProductsController } from "../controller/productsController.js";
 import { CartsController } from "../controller/cartsController.js";
 import { ticketService } from "../services/ticket.Service.js";
 import {Mocking} from '../controller/mockingController.js'
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
+import { CustomError } from "../utils/customError.js";
 
 export const router = Router();
 
@@ -74,7 +76,9 @@ router.get('/carts', passportCall('jwt'), securityAcces(["public"]),async (req,r
 router.get('/carts/:id', passportCall('jwt'), securityAcces(["public"]), async (req, res) => {
   try {
     const cart = await CartsController.getCartById(req);
-    
+    if(!cart){
+     return res.redirect('/errorHandlebars')
+    } 
     cart.products.forEach(prod => {
       prod.subtotal = (prod.product.price * prod.quantity).toFixed(2)
     });

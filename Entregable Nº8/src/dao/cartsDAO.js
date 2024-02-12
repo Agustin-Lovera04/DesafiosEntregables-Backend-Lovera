@@ -1,4 +1,6 @@
 import { cartsModel } from "../dao/models/cartsModel.js";
+import { CustomError } from "../utils/customError.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 
 export class CartsDAO{
     constructor(){}
@@ -20,7 +22,7 @@ export class CartsDAO{
           return getCart;
         } catch (error) {
           console.log("No se encontro carrito con Id:" + cartId);
-          return null;
+          return CustomError.CustomError('NO SE ENCONTRO CARRITO', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
         }
       }
 

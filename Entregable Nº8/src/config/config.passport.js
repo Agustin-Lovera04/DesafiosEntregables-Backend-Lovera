@@ -95,7 +95,7 @@ export const initPassport = () => {
 
         let user = await userModel.findOne({email:username}).lean()
         if(!user){
-          return done(null, false, {message: 'Datos Invalidos'})
+          return done(null, false, CustomError.CustomError('DATOS INVALIDOS', 'DATOS INVALIDOS', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         }
         
         if(!validPassword(user, password)){

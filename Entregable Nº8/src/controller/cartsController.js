@@ -48,7 +48,7 @@ export class CartsController {
       let getCart = await cartsService.getCartById(id);
       if (!getCart) {
         console.log("Error en la búsqueda por ID");
-        return null;
+        return CustomError.CustomError('NO SE ENCONTRO CARRITO', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
       }
 /*      let total = 0
     getCart.products.forEach(product => {
@@ -60,7 +60,7 @@ export class CartsController {
      return getCart
     } catch (error) {
       return res.status(500).json({
-        error: error.message,
+        Error: CustomError.CustomError('NO SE ENCONTRO CARRITO', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
       });
     }
   }

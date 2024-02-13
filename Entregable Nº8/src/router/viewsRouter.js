@@ -11,13 +11,13 @@ import { CustomError } from "../utils/customError.js";
 
 export const router = Router();
 
-export const auth =(req,res,next)=>{
+/* export const auth =(req,res,next)=>{
   if(!req.session.user){
     res.redirect('/login?error=Debes iniciar sesion para acceder a la web')
   }
   next()
 }
-
+ */
 router.get("/", async (req, res) => {
   try {
     res.status(200).render("index");
@@ -50,6 +50,10 @@ router.get('/current',passportCall('jwt'),securityAcces(["public"]),async(req,re
 router.get('/products', passportCall('jwt'), securityAcces(["public"]), async (req, res) => {
   try {
     const renderData = await ProductsController.renderData(req);
+    if(!renderData){
+        let error  =  CustomError.CustomError('ERROR AL RENDERIZAR PRODUCTOS', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+         return res.render('errorHandlebars', {error})
+    }
 
     res.render('viewProducts', renderData);
   } catch (error) {
@@ -59,6 +63,10 @@ router.get('/products', passportCall('jwt'), securityAcces(["public"]), async (r
 router.get('/products/:id', passportCall('jwt'), securityAcces(["public"]),async (req,res)=>{
   try {
     const renderProductById = await ProductsController.getProductById(req)
+    if(!renderProductById){
+      let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO PRODUCTO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
+       return res.render('errorHandlebars', {error})
+      } 
     res.status(200).render("viewDetailProduct", renderProductById);
   } catch (error) {
     
@@ -68,6 +76,10 @@ router.get('/products/:id', passportCall('jwt'), securityAcces(["public"]),async
 router.get('/carts', passportCall('jwt'), securityAcces(["public"]),async (req,res)=>{
   try {
     const renderCart = await CartsController.render(req)
+    if(!renderCart){
+      let error  =  CustomError.CustomError('ERROR AL RENDERIZAR CARRITOS', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+       return res.render('errorHandlebars', {error})
+  }
     res.render('viewCarts', renderCart)
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -77,7 +89,8 @@ router.get('/carts/:id', passportCall('jwt'), securityAcces(["public"]), async (
   try {
     const cart = await CartsController.getCartById(req);
     if(!cart){
-     return res.redirect('/errorHandlebars')
+    let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
+     return res.render('errorHandlebars', {error})
     } 
     cart.products.forEach(prod => {
       prod.subtotal = (prod.product.price * prod.quantity).toFixed(2)
@@ -94,6 +107,11 @@ router.get('/carts/:id', passportCall('jwt'), securityAcces(["public"]), async (
 router.get('/purchase/:tid',passportCall('jwt'), securityAcces(["public"]), async (req, res) =>{
   let {tid} = req.params
   console.log(tid)
+  if(!tid){
+    let error  =  CustomError.CustomError('ERROR INTERNO', 'ERROR AL RECUPERAR LA ORDEN, CONTACTE CON EL ADMIN', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.INTERNAL)
+     return res.render('errorHandlebars', {error})
+    } 
+  
 
   let ticket = await ticketService.getTicketByID(tid)
   console.log(ticket)

@@ -51,11 +51,6 @@ if (config.MODE === 'development') {
 
 export const middleLogg = (req, res, next) => {
   req.logger = logger;
-  try {
-    next()
-  } catch (error) {
-    req.logger.error('Error in request processing:', error);
-    next(error); 
-  }
+  next();
 };
 

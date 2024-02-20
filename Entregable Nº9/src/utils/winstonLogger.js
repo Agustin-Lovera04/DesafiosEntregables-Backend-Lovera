@@ -1,11 +1,9 @@
 import { __dirname } from '../utils.js';
-
-/*  --------------WINSTON----------- */
-import { config } from '../config/config.js'
-import winston from 'winston'
+import { config } from '../config/config.js';
+import winston from 'winston';
 
 const logger = winston.createLogger({
-  level: {
+  levels: {
     debug: 0,
     http: 1,
     info: 2,
@@ -29,28 +27,31 @@ const logger = winston.createLogger({
 });
 
 const transportConsoleDEV = new winston.transports.Console({
-  level: 'debug'
+  level: 'debug',
 });
+
 const transportConsolePROD = new winston.transports.Console({
   level: 'info',
 });
 
+
 const transportFilePROD = new winston.transports.File({
-  filename:`${__dirname}/logs/error.log` , 
+  filename: `${__dirname}/logs/error.log`,
   level: 'error',
 });
 
 
 if (config.MODE === 'development') {
-  console.log('development')
+  console.log('Development mode');
   logger.add(transportConsoleDEV);
 } else if (config.MODE === 'production') {
+  console.log('Production mode');
   logger.add(transportConsolePROD);
   logger.add(transportFilePROD);
 }
+
 
 export const middleLogg = (req, res, next) => {
   req.logger = logger;
   next();
 };
-

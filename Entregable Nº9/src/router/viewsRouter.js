@@ -142,15 +142,15 @@ router.get('/errorServer', securityAcces(["public"]),(req,res)=>{
   res.render('errorServer')
 })
 
-router.get('/loggerTest', securityAcces(["public"]),(req,res)=>{
-  req.logger.debug('test')
-  req.logger.http('test')
-  req.logger.info('test')
-  req.logger.error('test')
-  req.logger.warning('test')
-  req.logger.fatal('test')
-  return res.status(200).json({test: 'Probando logger en consola'})
-})
+router.get('/loggerTest', securityAcces(["public"]), (req, res) => {
+  req.logger.debug('Debug message');
+  req.logger.http('HTTP message');
+  req.logger.info('Info message');
+  req.logger.warning('Warning message');
+  req.logger.error('Error message');
+  req.logger.fatal('Fatal message');
+  return res.status(200).json({ message: 'TESTEANDO LOGS EN CONSOLA' });
+});
 
 /* TOMA ENDPOINT ENPOINT ERRONEO */
 router.get('*', securityAcces(["public"]),(req,res)=>{

@@ -65,6 +65,7 @@ router.get('/products/:id', passportCall('jwt'), securityAcces(["public"]),async
   try {
     const renderProductById = await ProductsController.getProductById(req)
     if(!renderProductById){
+      req.logger.error('NO SE ENCONTRO PRODUCTO POR ID')
       let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO PRODUCTO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
       return res.render('errorHandlebars', {error})
     } 
@@ -78,6 +79,7 @@ router.get('/carts', passportCall('jwt'), securityAcces(["public"]),async (req,r
   try {
     const renderCart = await CartsController.render(req)
     if(!renderCart){
+      req.logger.fatal('ERROR AL RENDERIZAR CARRITOS')
       let error  =  CustomError.CustomError('ERROR AL RENDERIZAR CARRITOS', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
        return res.render('errorHandlebars', {error})
   }
@@ -90,6 +92,7 @@ router.get('/carts/:id', passportCall('jwt'), securityAcces(["public"]), async (
   try {
     const cart = await CartsController.getCartById(req);
     if(!cart){
+      req.logger.error('NO SE ENCONTRO CARRITO POR ID')
     let error  =  CustomError.CustomError('ERROR EN DATOS', 'NO SE ENCONTRO CARRITO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
      return res.render('errorHandlebars', {error})
     } 

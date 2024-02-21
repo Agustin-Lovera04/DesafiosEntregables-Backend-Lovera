@@ -1,3 +1,3 @@
-[31merror[39m: RENDER
-[32mdebug[39m: Debug message
-[36mhttp[39m: HTTP message
+
+[31merror[39m: Error message
+[31mfatal[39m: Fatal message

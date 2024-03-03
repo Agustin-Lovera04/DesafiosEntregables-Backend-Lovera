@@ -6,6 +6,7 @@ import { router as productManagerRouter } from "./router/products-router.js";
 import { router as cartManagerRouter } from "./router/carts-router.js";
 import { router as chatManagerRouter } from "./router/chat-router.js";
 import { router as sessionsManagerRouter } from "./router/sessions-router.js";
+import { router as userManagerRouter } from "./router/user-router.js";
 /* import { SessionsRouter } from "./router/sessions-router.js"; */
 import { __dirname} from "./utils.js";
 /* import { chatManager } from "./dao/managerMongo/chatManager.js";
@@ -79,6 +80,7 @@ app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
 /* app.use("/api/sessions", sessionsRouter.getRouter()) */
 app.use('/api/sessions', sessionsManagerRouter)
+app.use('/api/users/premiun', userManagerRouter)
 app.use("/", viewsRouter);
 
 app.use(errorHandler)

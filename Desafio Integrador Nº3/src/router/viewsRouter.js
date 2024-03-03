@@ -8,6 +8,7 @@ import { ticketService } from "../services/ticket.Service.js";
 import {Mocking} from '../controller/mockingController.js'
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { CustomError } from "../utils/customError.js";
+import { UserController } from "../controller/userController.js";
 
 export const router = Router();
 
@@ -120,6 +121,21 @@ router.get('/purchase/:tid',passportCall('jwt'), securityAcces(["public"]), asyn
   let ticket = await ticketService.getTicketByID(tid)
   console.log(ticket)
   res.render('ticket', {ticket})
+})
+
+/* CAMBIO USER ==> PREMIUN */
+
+router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["public"]),async (req,res)=>{
+  try {
+    let user = await UserController.getUserById(req)
+    if(!user){
+    let error  =  CustomError.CustomError('ERROR ARGUMENTOS', 'NO SE ENCONTRO USUARIO CON EL ID INGRESADO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
+      return res.render('errorHandlebars', {error})
+    }
+    res.render('userRol', {user: user})
+  } catch (error) {
+    return res.status(500).json({error: error.message})
+  }
 })
 
 

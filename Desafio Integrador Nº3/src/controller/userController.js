@@ -1,0 +1,61 @@
+import mongoose from "mongoose";
+import { io } from "../app.js";
+import { productsService } from "../services/products.Service.js";
+import { ticketService } from "../services/ticket.Service.js";
+import { v4 } from "uuid";
+import { CustomError } from "../utils/customError.js";
+import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
+import { userService } from "../services/user.Service.js";
+
+function idValid(id, res) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return CustomError.CustomError('Error al validar ID', 'ID Invalido', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS);
+    }
+  }
+
+
+  export class UserController{ 
+    constructor (){}
+    static async getUserById(req, res) {
+        try {
+          let { uid } = req.params;
+          let valid = idValid(uid, res);
+          if (valid) {
+            return null;
+          }
+          console.log('Controller 01'); 
+    
+          let getUser = await userService.getUserById(uid);
+          if (!getUser) {
+            console.log("Error en la búsqueda por ID");
+            return null
+          }
+         return getUser
+        } catch (error) {
+          return res.status(500).json({
+            Error: CustomError.CustomError('NO SE ENCONTRO USUARIO', 'NO SE ENCONTRO USUARIO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
+          });
+        }
+      }
+    
+      static async changeRol(req, res, rol){
+        try {
+          let user = req.user
+          let {rol} = req.body
+          if(!rol, !user){
+            return res.status(404).json({error: 'ERROR INTERNO'})
+          }
+          let userMod = await userService.changeRol(user, rol)
+          if(!userMod){
+            return res.status(404).json({error: 'ERROR INTERNO'})
+          }
+          console.log(userMod)
+          return userMod
+        } catch (error) {
+          return res.status(500).json({
+            Error: CustomError.CustomError('ERROR:', 'NO SE MODIFICO ROL', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
+          });
+        }
+        }
+      }
+  

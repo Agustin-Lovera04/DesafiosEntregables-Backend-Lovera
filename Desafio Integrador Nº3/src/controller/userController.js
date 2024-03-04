@@ -40,6 +40,7 @@ function idValid(id, res) {
     
       static async changeRol(req, res, rol){
         try {
+          console.log('LLEGO')
           let user = req.user
           let {rol} = req.body
           if(!rol, !user){
@@ -49,7 +50,7 @@ function idValid(id, res) {
           if(!userMod){
             return res.status(404).json({error: 'ERROR INTERNO'})
           }
-          console.log(userMod)
+          console.log('se va')
           return userMod
         } catch (error) {
           return res.status(500).json({

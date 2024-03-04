@@ -9,7 +9,7 @@
       <h2 class="h4 mt-3">Su rol es: <span class="badge bg-primary">{{user.rol}}</span></h2>
             <hr class="hr-divider">
 
-            <form action="/api/users/premiun" method="post">
+            <form id="changeRolForm">
                 <div class="mb-3">
                     <label for="rol" class="form-label">Seleccione su rol:</label>
                     <select class="form-control" id="rol" name="rol" required>
@@ -20,11 +20,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary">CAMBIAR ROL</button>
             </form>
+          <div id="resFetch" class="text-center"></div>
         </div>
     </div>
 </div>
 
 {{>menu1}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="/js/viewsUserRol.js"></script>

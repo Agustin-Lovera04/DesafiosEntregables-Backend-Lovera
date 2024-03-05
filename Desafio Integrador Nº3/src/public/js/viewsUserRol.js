@@ -32,6 +32,10 @@ changeRolForm.addEventListener("submit", async (e) => {
   
         resFetch.innerHTML = `CAMBIO DE ROL EXITOSO`;
         changeRolForm.reset();
+        /* PONGO SOLO UN TIMEOUT PARA VER EL CARTEL DE RESPUESTA */
+        setTimeout(() => {
+          window.location.href = 'http://localhost:8080/api/sessions/logout'
+        }, "1000");
       }
     } catch (error) {
       console.error("Error in Fetch:", error);

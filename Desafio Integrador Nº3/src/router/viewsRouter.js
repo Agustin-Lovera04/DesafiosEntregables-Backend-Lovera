@@ -137,7 +137,16 @@ router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["publi
     return res.status(500).json({error: error.message})
   }
 })
+router.get('/restablecerPass',(req,res)=>{
+  let {error, message} = req.query 
 
+  res.render('rstPass' , {error, message})
+})
+router.get('/restPass2',async(req,res)=>{
+  let {token} = req.query
+
+  res.render('rstPass2', {token})
+})
 
 /* ENDPOINT PARA PROBAR SEGURIDAD */
 router.get('/support', passportCall('jwt'),securityAcces(["admin"]),(req,res)=>{

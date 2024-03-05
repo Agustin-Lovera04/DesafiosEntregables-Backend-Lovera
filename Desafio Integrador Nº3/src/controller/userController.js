@@ -51,12 +51,32 @@ function idValid(id, res) {
             return res.status(404).json({error: 'ERROR INTERNO'})
           }
           console.log('se va')
-          return userMod
+          return res.status(200).json({userMod})
         } catch (error) {
           return res.status(500).json({
             Error: CustomError.CustomError('ERROR:', 'NO SE MODIFICO ROL', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
           });
         }
         }
+
+
+      static async getUser(req,res,email){
+        console.log('controller')
+        console.log(email)
+        let user = await userService.getUser(email)
+        if(!user){
+          return res.status(404).json({error: 'ERROR AL RECUPERAR USUARIO2'})
+        }
+        return user
+      }
+
+
+      static async updatePassUser(res,pass, email){
+        let updatedUser = await userService.updatePassUser(pass,email)
+        if(!updatedUser){
+        return res.status(500).json({error: 'Fallo el update controller'})
+        }
+        return updatedUser
+      }
       }
   

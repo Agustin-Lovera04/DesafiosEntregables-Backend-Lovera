@@ -9,6 +9,13 @@ export class UserService {
     async changeRol(user, rol){
         return await this.dao.changeRol(user,rol)        
     }    
+
+    async getUser(email){
+        return await this.dao.getUser(email)
+    }
+    async updatePassUser(pass,email){
+        return await this.dao.updatePassUser(pass,email)
+    }
 }
 
 import { UserDAO } from "../dao/userDAO.js"

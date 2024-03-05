@@ -2,6 +2,10 @@ import { Router } from "express";
 import { userModel } from "../dao/models/usersModel.js";
 import passport from "passport";
 import { genToken, hashearPass, passportCall, validPassword } from "../utils.js";
+import { UserController } from "../controller/userController.js";
+import jwt from 'jsonwebtoken'
+import { TOKENKEY } from "../utils.js";
+import { sendMail } from "../mails/mails.js";
 /* import { MyRouter } from "./router.js"; */
 export const router = Router();
 
@@ -43,46 +47,62 @@ router.get('/callbackGithub',passportCall('github'),
     res.redirect('/login')
   })
 
+  router.post('/restPass1',async(req,res)=>{
+    let {email} = req.body
+    if(!email){
+      return res.status(404).json({error: 'NO INGRESO UN MAIL'})
+    }
+    let user = await UserController.getUser(req, res,email)
+    if(!user){
+      return res.status(404).json({error: 'ERROR AL RECUPERAR USUARIO1'})
+    }
+    delete user.password
+    let token = genToken(user)
+    if(!token){
+      return res.status(500).json({error: 'Error al generar jwt'})
+    }
 
-  
-/* 
-export class SessionsRouter extends MyRouter{
-      init(){
-        
-        this.post('/registro' , ["public"] , passportCall('register'),(req,res)=>{
-            /* res.successNewUser('Registro Exitoso', req.user) 
-            res.redirect('/login')
-        })
-        
+    let message= `Usted a solicitado reestablecer su contraseña.<br><br><hr>
+    -Haga click en el siguiente enlace para continuar: <a href="http://localhost:8080/api/sessions/restPass2?token=${token}">REESTABLECER CONTRASEÑA</a><br><br><hr>
     
-        this.post('/login', ['public'],passportCall('login'), (req,res)=>{
+    El enlace es valido solo por 1 HORA (60 minutos).
+    Si no es utilizado el enlace expirara, y debera generar un enlace nuevo.`
+
+    let rta =await sendMail(email, "REESTABLECER CONTRASEÑA", message)
     
-    
-    
-          let token= genToken(req.user)
-          res.cookie('CookieUser', token, {httpOnly:true, maxAge: 1000*60*60})
-         /*  res.success(`Login Exitoso, Bienvenido ${req.user.first_name} Su rol: ${req.user.rol}`)
-         res.redirect('/current')
-        })
-    /*      RUTA PRUEBA QUE ANDA BIEN LOS PERMISOS, (HASTA QUE PASE TODOS LOS ROUTER AL CUSTOM ROUTER) 
-      this.get('/support', ['admin'],(req,res)=>{
-        res.success('Servicio de Soporte de pagina, habilitado solo para Administradores!')
-      }) */
-      /*   this.get("/github", ['public'],passportCall("github", {}), (req, res) => {});
-          this.get(
-            "/callbackGithub",["public"],
-            passportCall("github"),
-            (req, res) => {
-              let user = req.user;
-              let token= genToken(user)
-              res.cookie('CookieUser', token, {httpOnly:true, maxAge: 1000*60*60})
-              res.redirect("/current");
-            }
-          )
-          
-          this.get("/logout", ['public'],async (req, res) => {
-            res.clearCookie('CookieUser');
-          
-            res.redirect("/login");
-          });
-          } */
+    if(rta.accepted.length > 0){
+      res.redirect('http://localhost:8080/restablecerPass?message=Email enviado. Verifique su correo electronico.')
+    }else{
+      res.redirect('http://localhost:8080/restablecerPass?error=Error interno intente mas tarde')
+    }
+  })
+
+
+  router.get('/restPass2',async(req,res)=>{
+    let {token} = req.query
+    try {
+      let validToken = jwt.verify(token, TOKENKEY)
+      if(!validToken){
+        return res.status(404).json({error: 'ERROR AL RECUPERAR TOKEN'})
+      }
+      res.redirect(`http://localhost:8080/restPass2?token=${token}`)
+    } catch (error) {
+      return res.status(500).json({error: error})
+    } 
+  })
+
+
+  router.post('/restPass3', async (req,res)=>{
+    let {pass1, token} = req.body
+    let contentToken = jwt.verify(token, TOKENKEY)
+/*     let user = await UserController.getUser(contentToken.email)
+    if(!user){
+      return res.status(500).json({error: 'error al recuperar user'})
+    } */
+    let updatePassUser = await UserController.updatePassUser(res, pass1, contentToken.email)
+if(!updatePassUser){
+  return res.status(500).json({error: 'FALLO EN EL PROCESO DE REESTABLECIMIENTO, INTENTE MAS TARDE'})
+}
+
+return res.status(200).json({updatePassUser})
+  })

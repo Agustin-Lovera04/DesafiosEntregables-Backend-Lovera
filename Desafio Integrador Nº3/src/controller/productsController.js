@@ -209,7 +209,11 @@ static async deleteProduct(req,res){
       console.log("Error en busqueda por ID");
       return null;
     }
-
+    if(req.user.rol !== "Admin"){
+      if(req.user.email !== getProductById.owner){
+        return res.status(404).json({error: 'SOLO PUEDES ELIMINAR LOS PRODUCTOS CREADOS POR TI'})
+      } 
+    }
     let prodDeleted = await productsService.deleteProduct(id)
 
     if (!prodDeleted) {

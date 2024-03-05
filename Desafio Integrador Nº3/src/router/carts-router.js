@@ -16,7 +16,7 @@ const upload = multer();
 /* 
 router.get("/:id", passportCall('jwt'),CartsController.getCartById);
  */
-router.post("/:cid/product/:pid", passportCall('jwt'),securityAcces(["user"]),CartsController.addProductInCart);
+router.post("/:cid/product/:pid", passportCall('jwt'),securityAcces(["user", "premiun"]),CartsController.addProductInCart);
 
 router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin"]),CartsController.createCart);
 

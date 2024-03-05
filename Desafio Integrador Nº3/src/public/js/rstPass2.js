@@ -17,7 +17,6 @@ formRst.addEventListener("submit", async (e) => {
     resFetch.appendChild(errorDiv);
     return
     }
-    console.log(pass1.value.length);
     if(pass1.value.length <= 2){        
         resFetch.classList.remove('alert-danger', 'alert-success');
         
@@ -31,11 +30,16 @@ formRst.addEventListener("submit", async (e) => {
         }
         let tokenVal = token.value
         let pass = pass1.value
-        console.log(tokenVal)
+
   try {
-    const response = await fetch("http://localhost:8080/api/sessions/restPass3", {
+    const response = await fetch(`http://localhost:8080/api/sessions/restPass3?token=${tokenVal}`, {
       method: "POST",
-    body: pass, tokenVal
+      headers: {
+        "Content-Type": "application/json" // Indicamos que estamos enviando datos JSON
+    },
+    body: JSON.stringify({ // Convertimos los datos a JSON
+      pass: pass // Enviamos la contraseña con una clave 'pass'
+  })
     });
 
     const data = await response.json();

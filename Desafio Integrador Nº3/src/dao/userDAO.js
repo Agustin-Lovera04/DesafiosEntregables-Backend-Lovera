@@ -50,7 +50,7 @@ export class UserDAO {
   async getUser(email) {
     try {
       console.log("llego a dao");
-      let user = await userModel.findOne({ email });
+      let user = await userModel.findOne({ email }).lean()
       if (!user) {
         return null;
       }
@@ -73,8 +73,6 @@ export class UserDAO {
         return null
         
       }
-      console.log('PASO USERRR')
-      console.log(user)
       let hashPass = await hashearPass(pass);
       if (!hashPass) {
         return CustomError.CustomError(
@@ -85,13 +83,7 @@ export class UserDAO {
         );
       }
       if (bcrypt.compareSync(pass, user.password)) {
-        console.log('REBOTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
-        return CustomError.CustomError(
-          "ERROR",
-          "UTILIZO UNA CONTRASEÑA REGISTRADA ANTERIORMENTE",
-          STATUS_CODES.ERROR_DATOS_ENVIADOS,
-          ERRORES_INTERNOS.OTROS
-        );
+      return null
       }
 
       let updatedUser = await userModel.updateOne(
@@ -99,12 +91,13 @@ export class UserDAO {
         { password: hashPass }
       );
       if (!updatedUser) {
-        return CustomError.CustomError(
+       CustomError.CustomError(
           "ERROR",
           "ERROR AL MODIFICAR PASS DE USER",
           STATUS_CODES.ERROR_DATOS_ENVIADOS,
           ERRORES_INTERNOS.OTROS
-        );
+        ); 
+        return null
       }
 
       return updatedUser;

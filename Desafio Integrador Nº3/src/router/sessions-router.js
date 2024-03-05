@@ -81,9 +81,15 @@ router.get('/callbackGithub',passportCall('github'),
   router.get('/restPass2',async(req,res)=>{
     let {token} = req.query
     try {
-      let validToken = jwt.verify(token, TOKENKEY)
-      if(!validToken){
-        return res.status(404).json({error: 'ERROR AL RECUPERAR TOKEN'})
+      let contentToken;
+      try {
+          contentToken = jwt.verify(token, TOKENKEY);
+      } catch (error) {
+          if (error.name === 'TokenExpiredError') {
+              return res.redirect('http://localhost:8080/restablecerPass?error=ENLACE EXPIRADO');
+          } else {
+              return res.status(500).json({ error });
+          }
       }
       res.redirect(`http://localhost:8080/restPass2?token=${token}`)
     } catch (error) {
@@ -93,13 +99,22 @@ router.get('/callbackGithub',passportCall('github'),
 
 
   router.post('/restPass3', async (req,res)=>{
-    let {pass1, token} = req.body
-    let contentToken = jwt.verify(token, TOKENKEY)
-/*     let user = await UserController.getUser(contentToken.email)
-    if(!user){
-      return res.status(500).json({error: 'error al recuperar user'})
-    } */
-    let updatePassUser = await UserController.updatePassUser(res, pass1, contentToken.email)
+    let {pass} = req.body
+    let {token} = req.query
+let contentToken;
+
+    try {
+        contentToken = jwt.verify(token, TOKENKEY);
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.redirect('http://localhost:8080/restablecerPass?error=ENLACE EXPIRADO');
+        } else {
+            return res.status(500).json({ error });
+        }
+    }
+
+   console.log(pass)
+    let updatePassUser = await UserController.updatePassUser(res, pass, contentToken.email)
 if(!updatePassUser){
   return res.status(500).json({error: 'FALLO EN EL PROCESO DE REESTABLECIMIENTO, INTENTE MAS TARDE'})
 }

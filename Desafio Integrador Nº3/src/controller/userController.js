@@ -74,9 +74,9 @@ function idValid(id, res) {
       static async updatePassUser(res,pass, email){
         let updatedUser = await userService.updatePassUser(pass,email)
         if(!updatedUser){
-        return res.status(500).json({error: 'Fallo el update controller'})
+        return null
         }
-        return updatedUser
+        return ({updatedUser})
       }
       }
   

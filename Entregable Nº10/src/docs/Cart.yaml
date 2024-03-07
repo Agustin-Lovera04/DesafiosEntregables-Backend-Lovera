@@ -1,0 +1,13 @@
+paths:
+  /carts:
+    get: 
+      summary: Obtener y listar, todos los carritos de BD
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Exito al recuperar carritos, Renderiza vista "viewCarts"
+        "404":
+          description: Error al renderizar y recuperar carritos
+        "500":
+          description: Error interno

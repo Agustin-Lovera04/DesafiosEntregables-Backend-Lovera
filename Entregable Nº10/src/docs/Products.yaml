@@ -1,0 +1,15 @@
+#TODO LO QUE TENGA PARAMETROS, BODY, ETC SE HACE DESPUES, PRIMERO VAMOS CON TODOS LOS GET
+
+paths:
+  /products:
+    get:
+      summary: Obtener y listar, implementando paginacion, todos los productos de BD
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: Exito al recuperar productos, Renderiza vista "viewProducts"
+        "404":
+          description: Error al renderizar y recuperar productos
+        "500":
+          description: Error interno

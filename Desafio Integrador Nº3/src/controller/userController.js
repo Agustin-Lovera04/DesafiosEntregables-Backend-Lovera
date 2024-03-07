@@ -6,6 +6,10 @@ import { v4 } from "uuid";
 import { CustomError } from "../utils/customError.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { userService } from "../services/user.Service.js";
+import bcrypt from "bcrypt";
+import { validPassword } from "../utils.js";
+
+
 
 function idValid(id, res) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -33,7 +37,7 @@ function idValid(id, res) {
          return getUser
         } catch (error) {
           return res.status(500).json({
-            Error: CustomError.CustomError('NO SE ENCONTRO USUARIO', 'NO SE ENCONTRO USUARIO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
+        error: error.message
           });
         }
       }
@@ -53,12 +57,8 @@ function idValid(id, res) {
           console.log('se va')
           return res.status(200).json({userMod})
         } catch (error) {
-          return res.status(500).json({
-            Error: CustomError.CustomError('ERROR:', 'NO SE MODIFICO ROL', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS)
-          });
-        }
-        }
-
+          return res.status(500).json({error: error.message})
+        } }
 
       static async getUser(req,res,email){
         console.log('controller')
@@ -71,12 +71,21 @@ function idValid(id, res) {
       }
 
 
-      static async updatePassUser(res,pass, email){
-        let updatedUser = await userService.updatePassUser(pass,email)
-        if(!updatedUser){
-        return null
+      static async updatePassUser(res, pass, email) {
+        let user = await userService.getUser(email);
+        if (!user) {
+          return res.status(500).json({ error: 'Error al recuperar usuario' });
         }
-        return ({updatedUser})
+        
+        let validPass = validPassword(user, pass)
+        if (validPass === true) {
+          return res.status(400).json({ error: 'Contraseña registrada en BD, restablecimiento rechazado' });
+        }
+   
+        let updatedUser = await userService.updatePassUser(pass, email);
+        if (!updatedUser) {
+          return res.status(500).json({ error: 'ERROR INTERNO CONTACTE AL ADMINISTRADOR' });
+        }
+        return res.status(200).json({message: 'Cambio realizado con exito'})
       }
-      }
-  
+} 

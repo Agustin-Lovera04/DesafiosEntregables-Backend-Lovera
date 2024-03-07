@@ -35,10 +35,10 @@ formRst.addEventListener("submit", async (e) => {
     const response = await fetch(`http://localhost:8080/api/sessions/restPass3?token=${tokenVal}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json" // Indicamos que estamos enviando datos JSON
+        "Content-Type": "application/json" 
     },
-    body: JSON.stringify({ // Convertimos los datos a JSON
-      pass: pass // Enviamos la contraseña con una clave 'pass'
+    body: JSON.stringify({ 
+      pass: pass 
   })
     });
 
@@ -54,18 +54,13 @@ formRst.addEventListener("submit", async (e) => {
 
       resFetch.innerHTML = '';
       resFetch.appendChild(errorDiv);
+      console.log('LLEGO ACA 1 CLIENTE')
     } else {
-      console.log("fetch enviado");
-
-      resFetch.classList.add('alert', 'alert-success');
-
-      resFetch.innerHTML = `CONTRASEÑA REESTABLECIDA CON EXITO`;
       formRst.reset();
       setTimeout(() => {
-        window.location.href = 'http://localhost:8080/login?message=Contraseña Reestablecida con exito'
-      }, "1000");
-    }
-    } catch (error) {
+          window.location.href = 'http://localhost:8080/login?message=Contraseña Reestablecida con éxito'
+      }, 1000);
+    } } catch (error) {
         console.error("Error in Fetch:", error);
 
         resFetch.classList.remove('alert-danger', 'alert-success');

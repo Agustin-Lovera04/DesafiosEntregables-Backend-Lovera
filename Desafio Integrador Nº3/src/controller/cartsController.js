@@ -116,15 +116,8 @@ export class CartsController {
   
       if(req.user.rol == "premiun"){
         if(req.user.email !== product.owner){
-          console.log('error acas')
           return res.status(400).json({
-            error: CustomError.CustomError(
-              'Error al agregar producto al carrito',
-              'Solo puedes agregar tus propios productos',
-              STATUS_CODES.BAD_REQUEST,
-              ERRORES_INTERNOS.OTROS
-            )
-          });
+            error: 'No puedes agregar productos creados por ti'});
         } 
       }
       let cartMod = await cartsService.addProductInCart(cid, product);

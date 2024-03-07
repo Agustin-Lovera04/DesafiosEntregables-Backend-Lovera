@@ -2,7 +2,6 @@ import { hashearPass } from "../utils.js";
 import { CustomError } from "../utils/customError.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { userModel } from "./models/usersModel.js";
-import bcrypt from "bcrypt";
 
 export class UserDAO {
   constructor() {}
@@ -56,12 +55,7 @@ export class UserDAO {
       }
       return user;
     } catch (error) {
-      return CustomError.CustomError(
-        "ERROR",
-        "ERROR AL RECUPERAR USER",
-        STATUS_CODES.ERROR_DATOS_ENVIADOS,
-        ERRORES_INTERNOS.OTROS
-      );
+      return null
     }
   }
 
@@ -71,43 +65,23 @@ export class UserDAO {
       let user = await this.getUser(email);
       if (!user) {
         return null
-        
       }
-      let hashPass = await hashearPass(pass);
+      let hashPass = hashearPass(pass);
       if (!hashPass) {
-        return CustomError.CustomError(
-          "ERROR",
-          "ERROR AL HASHEAR PASS",
-          STATUS_CODES.ERROR_DATOS_ENVIADOS,
-          ERRORES_INTERNOS.OTROS
-        );
+       return null
       }
-      if (bcrypt.compareSync(pass, user.password)) {
-      return null
-      }
-
+    
       let updatedUser = await userModel.updateOne(
         { email: email },
         { password: hashPass }
       );
       if (!updatedUser) {
-       CustomError.CustomError(
-          "ERROR",
-          "ERROR AL MODIFICAR PASS DE USER",
-          STATUS_CODES.ERROR_DATOS_ENVIADOS,
-          ERRORES_INTERNOS.OTROS
-        ); 
         return null
       }
 
-      return updatedUser;
+      return updatedUser
     } catch (error) {
-      return CustomError.CustomError(
-        "ERROR",
-        "ERROR AL MODIFICAR PASS DE USER",
-        STATUS_CODES.ERROR_DATOS_ENVIADOS,
-        ERRORES_INTERNOS.OTROS
-      );
+      return null
     }
   }
 }

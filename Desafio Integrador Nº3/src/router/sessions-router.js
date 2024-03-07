@@ -119,5 +119,5 @@ if(!updatePassUser){
   return res.status(500).json({error: 'FALLO EN EL PROCESO DE REESTABLECIMIENTO, INTENTE MAS TARDE'})
 }
 
-return res.status(200).json({updatePassUser})
+return updatePassUser
   })

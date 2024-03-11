@@ -116,8 +116,6 @@ router.get('/purchase/:tid',passportCall('jwt'), securityAcces(["public"]), asyn
     let error  =  CustomError.CustomError('ERROR INTERNO', 'ERROR AL RECUPERAR LA ORDEN, CONTACTE CON EL ADMIN', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.INTERNAL)
      return res.render('errorHandlebars', {error})
     } 
-  
-
   let ticket = await ticketService.getTicketByID(tid)
   console.log(ticket)
   res.render('ticket', {ticket})

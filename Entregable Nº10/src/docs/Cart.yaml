@@ -11,3 +11,166 @@ paths:
           description: Error al renderizar y recuperar carritos
         "500":
           description: Error interno
+
+  /carts/{cartId}:
+    get:
+      summary: Obtiene el carrito con id que se obtiene por parametro
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: Id carrito a buscar
+          schema:
+            type : string
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Exito al recuperar el carrito. Devuelve el carrito, renderizado en vista "ViewDetailCarts"
+        "400":
+          description: No se recupero carrito, ID incorrecto
+        "500":
+          description: Error interno.
+  /api/carts:
+    post:
+      summary: Crea nuevo carrito y lo guarda en BD.
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Exito al crear el carrito.
+        "403":
+          description: Error al crear el carrito.
+        "500":
+          description: Error Interno.
+  
+  /api/carts/{cartId}:
+    put:
+      summary: Obtiene el ID de un carrito, por medio de parametros en URL, y modifica el carrito, con los campos que le enviemos en el body
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: Id carrito a buscar
+          schema:
+            type : string
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Exito al modificar el carrito.
+        "400":
+          description: No se recupero carrito, ID incorrecto
+        "500":
+          description: Error interno.
+      delete:
+        summary: Obtiene el ID de un carrito, por medio de parametros en URL, y elimina todos los productos del carrito.
+        parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: Id carrito a buscar
+          schema:
+            type : string
+        tags:
+          - Carts
+        responses:
+          "201":
+            description: Exito al eliminar los productos.
+          "400":
+            description: No se recupero carrito, ID incorrecto
+          "500":
+            description: Error interno.
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Recibe por parametros el Id de carrito y el Id de producto. Guarda el mismo, en el carrito recibido.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+      tags:
+          - Carts
+      responses:
+        "201":
+          description: Exito al agregar producto en el carrito.
+        "400":
+          description: Error en el proceso de guardado
+        "500":
+          description: Error interno.
+    delete:
+      summary: Recibe por parametros el Id de carrito y el Id de producto. Elimina el mismo, del carrito recibido.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+      tags:
+          - Carts
+      responses:
+        "201":
+          description: Exito al eliminar producto en el carrito.
+        "400":
+          description: Error en el proceso de eliminacion
+        "500":
+          description: Error interno.
+    put:
+      summary: Recibe por parametros el Id de carrito y el Id de producto. Modifica el mismo, en el carrito recibido.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+      tags:
+          - Carts
+      responses:
+        "201":
+          description: Exito al modificar producto en el carrito.
+        "400":
+          description: Error en el proceso de modificacion.
+        "500":
+          description: Error interno.
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Obtiene el ID de un carrito, por medio de parametros en URL, e inicia el proceso de finalizacion de compra 
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Id carrito a buscar
+          schema:
+            type : string
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Exito al finalizar la compra. Devuelve ticket de compra.
+        "400":
+          description: Error al finalizar la compra
+        "500":
+          description: Error interno.

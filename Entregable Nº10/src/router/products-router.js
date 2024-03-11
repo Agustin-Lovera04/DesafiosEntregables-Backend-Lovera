@@ -38,5 +38,3 @@ router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin", "pre
 router.put("/:id", passportCall('jwt') , securityAcces(["public"]),ProductsController.updateProduct);
 
 router.delete("/:id", passportCall('jwt'),securityAcces(["admin", "premiun"]),ProductsController.deleteProduct);
-
-/* FALTA DELETEPRODUCTSALL */

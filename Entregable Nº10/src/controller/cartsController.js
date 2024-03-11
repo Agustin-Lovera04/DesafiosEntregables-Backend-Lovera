@@ -115,7 +115,7 @@ export class CartsController {
       }
   
       if(req.user.rol == "premiun"){
-        if(req.user.email !== product.owner){
+        if(req.user.email == product.owner){
           return res.status(400).json({
             error: 'No puedes agregar productos creados por ti'});
         } 

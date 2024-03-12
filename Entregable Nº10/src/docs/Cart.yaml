@@ -72,6 +72,11 @@ paths:
           description: Exito al crear el carrito.
         "403":
           description: Error al crear el carrito.
+          content: 
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#components/schemas/error8'
         "500":
           description: Error Interno.
   
@@ -100,6 +105,12 @@ paths:
           description: Exito al modificar el carrito.
         "400":
           description: No se recupero carrito, ID incorrecto
+          content: 
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#components/schemas/error4'
+                  - $ref: '#components/schemas/error6'
         "500":
           description: Error interno.
       delete:
@@ -147,6 +158,14 @@ paths:
           description: Exito al agregar producto en el carrito.
         "400":
           description: Error en el proceso de guardado
+          content: 
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#components/schemas/error1'
+                  - $ref: '#components/schemas/error2'
+                  - $ref: '#components/schemas/error3'
+                  - $ref: '#components/schemas/error5'
         "500":
           description: Error interno.
     delete:
@@ -231,6 +250,31 @@ paths:
           description: Error interno.
 
 components:
+  schemas:
+    error1:
+      type: string
+      description: Error al validar el ID
+    error2:
+      type: string
+      description: Error al recuperar producto
+    error3:
+      type: string
+      description: Error al agregar el prod al carrito
+    error4:
+      type: string
+      description: No se puede modificar la propiedad _id
+    error5:
+      type: string
+      description: No puedes agregar productos creados por ti      
+    error6:
+      type: string
+      description: Error al modificar
+    error7:
+      type: string
+      description: Error al eliminar
+    error8:
+      type: string
+      description: Error al crearCarrito    
   requestBodies:
     createCart:
       type: object
@@ -254,18 +298,18 @@ components:
       example: 
         quantity: 2
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
+    basicAuth: 
       type: http
       scheme: basic
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth:           
       type: http
       scheme: bearer
-      bearerFormat: JWT    # optional, arbitrary value for documentation purpose
-    cookieAuth:         # arbitrary name for the security scheme; will be used in the "security" key later
+      bearerFormat: JWT   
+    cookieAuth:        
       type: apiKey
       in: cookie
-      name: CookieUser  # cookie name
+      name: CookieUser
 security:
-  - basicAuth: []  # <-- use the same name here
-  - bearerAuth: []  # <-- use the same name here
+  - basicAuth: []
+  - bearerAuth: []
   - cookieAuth: []

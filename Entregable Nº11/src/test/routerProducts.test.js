@@ -3,7 +3,8 @@ import {expect} from 'chai'
 import supertest from 'supertest'
 import mongoose from 'mongoose'
 import { config } from '../config/config.js';
-
+import { v4 } from "uuid";
+import { genToken } from '../utils.js';
 try {
     await mongoose.connect(
       config.MONGO_URL
@@ -15,17 +16,19 @@ try {
   
 const requester=supertest('http://localhost:8080')
 
-/* EVALUAR LOGICA DE AUTENTICACION PARA HACER DINAMICO LA ASIGNACION DE TOKEN */
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWU5MTkwMTdiNmQ2OWMwNjMzMzJhMjAiLCJmaXJzdF9uYW1lIjoiQWd1c3RpbiIsImxhc3RfbmFtZSI6IkxvdmVyYSIsImVtYWlsIjoiYWd1c3J1Z2J5eUBnbWFpbC5jb20iLCJhZ2UiOjIsImNhcnQiOnsidGl0bGUiOiJDYXJybyBkZTogTG92ZXJhIiwic3RhdHVzIjp0cnVlLCJfaWQiOiI2NWU5MTkwMTdiNmQ2OWMwNjMzMzJhMWUiLCJwcm9kdWN0cyI6W10sIl9fdiI6MH0sInJvbCI6InByZW1pdW4iLCJEYXRlT24iOiIyMDI0LTAzLTA3VDAxOjMxOjQ1Ljc5NFoiLCJEYXRlVWx0aW1hdGVNb2QiOiIyMDI0LTAzLTA3VDAxOjMzOjU0LjM2OFoiLCJfX3YiOjAsImlhdCI6MTcxMDUxOTg2NSwiZXhwIjoxNzEwNTIzNDY1fQ.7mTJA9Z-iIw9QW8o7dqIbXSacFcxNijZO526Qv2Sjus'
-
 describe('PRUEBA ROUTER DE PRODUCTS', async function(){
     this.timeout(7000)
-    after(async()=>{
-      await mongoose.connection.collection("products").deleteMany({title:"PRODUCT TESTING SUPERTEST"})
 
+    let user = {first_name: "Aguss", last_name: "Loverga",edad: 20, email: "testing@testing.com", rol: "premiun", password: "wwwPPP"}
+    let token = genToken(user)
+
+    after(async()=>{
+      await mongoose.connection.collection("products").deleteMany({code:"testSPT"})
   })
+
     describe('Prueba Router products', async function(){
         it('Prueba endpoint GET /products. => Renderiza vista "ViewProducts", junto con un objeto que contiene: error, user, array de productos (10), componentes de paginacion',async function(){
+
             let respuesta = await requester.get("/products").set('Cookie', `CookieUser=${token}`)
             expect(respuesta.statusCode).to.be.equal(200)
             expect(respuesta.ok).to.be.true
@@ -43,10 +46,21 @@ describe('PRUEBA ROUTER DE PRODUCTS', async function(){
           let product = {title: "PRODUCT TESTING SUPERTEST", description: "test" ,code:"testSPT", price: 22, stock: 22,category: "test"}
 
           let respuesta = await requester.post('/api/products').send(product).set('Cookie', `CookieUser=${token}`)
-          console.log(respuesta)
+          expect(respuesta.statusCode).to.be.equal(200)
           expect(respuesta.ok).to.be.true
         })
 
-        /* HASTA ACA ANDANDO TODO BIEN!!!!!!------ */
+        it('Prueba endpoint PUT /api/products/:id => Permite modificar las propiedades de un producto, en BD', async function(){
+          let propMod = {title:`PUT LO DEJAMOS PARA TEST, PREGUNTAR LUEGO`, code: v4()}
+          let id = '65f4d3df0508978d41d95457'
+          let respuesta = await requester.put(`/api/products/${id}`).send(propMod).set('Cookie', `CookieUser=${token}`)
+          expect(respuesta.statusCode).to.be.equal(200)
+          expect(respuesta.ok).to.be.true
+        })
+/* VAMOS A DEJAR UN PRODUCTO DE PRUEBA EN BD, PARA QUE SE MANTENGA FUNCIONANDDO EL PUT, CON UN PRODUCTO CREADO POR EL USER DE TESTING. LUEGO PREGUNTAMOS CMO LO SOLUCIONO EL RESTO. */
+        it('Prueba endpoint DELETE /api/products/:id => Permite eliminar un producto. Coloca su dispnibilidad en false.', async function(){
+          /* DEBEMOS CREAR UN PRODUCTO E INSERTAR SU ID AQUI ABAO */
+        /*   let id =  */
+        })
     })
 })

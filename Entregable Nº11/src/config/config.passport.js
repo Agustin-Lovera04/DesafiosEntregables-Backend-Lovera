@@ -25,8 +25,8 @@ export const initPassport = () => {
     },
     async(req,username,password,done)=>{
       try {
-
         let {first_name, last_name, rol, email, age}=req.body
+        console.log(first_name, last_name, rol, email, age)
         if(!first_name ||!last_name|| !email||!age||!password){
           return done(null, false,CustomError.CustomError('COMPLETE TODOS LOS CAMPOS', 'COMPLETE LOS DATOS', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.OTROS))
         } 

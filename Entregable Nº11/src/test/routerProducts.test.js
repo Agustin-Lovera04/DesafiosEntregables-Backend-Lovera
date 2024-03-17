@@ -1,71 +1,108 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
-import supertest from 'supertest';
-import mongoose from 'mongoose';
-import { config } from '../config/config.js';
-import { v4 } from 'uuid';
-import { genToken } from '../utils.js';
+import { describe, it } from "mocha";
+import { expect } from "chai";
+import supertest from "supertest";
+import mongoose from "mongoose";
+import { config } from "../config/config.js";
+import { v4 } from "uuid";
+import { genToken } from "../utils.js";
 
-const requester = supertest('http://localhost:8080');
+const requester = supertest("http://localhost:8080");
 
-describe('PRUEBA ROUTER DE PRODUCTS', async function(){
-    this.timeout(12000)
+describe("PRUEBA ROUTER DE PRODUCTS", async function () {
+  this.timeout(5000);
 
-    let user = { first_name: 'Aguss', last_name: 'Lovera TEST', edad: 20, email: 'testing@testing.com', rol: 'premiun', password: 'wwwPPP' };
-    let token = genToken(user);
-    let productId;
+  let user = {
+    first_name: "Aguss",
+    last_name: "Lovera TEST",
+    edad: 20,
+    email: "testing@testing.com",
+    rol: "premiun",
+    password: "wwwPPP",
+  };
+  let token = genToken(user);
+  let productId;
 
-    before(async () => {
-        try {
-            await mongoose.connect(config.MONGO_URL);
-            console.log('BD Online');
+  before(async () => {
+    try {
+      await mongoose.connect(config.MONGO_URL);
+      console.log("BD Online");
 
-            let product = { title: 'PRODUCT TESTING SUPERTEST', description: 'test', code: 'testPUT', price: 22, stock: 22, category: 'test' };
-            let response = await requester.post('/api/products').send(product).set('Cookie', `CookieUser=${token}`);
-            productId = response.body.id;
-            console.log(productId);
-            console.log('PRODUCTOIOOOOO');
-        } catch (error) {
-            console.log(error.message);
-        }
+      let product = {
+        title: "PRODUCT TESTING SUPERTEST",
+        description: "test",
+        code: "testPUT",
+        price: 22,
+        stock: 22,
+        category: "test",
+      };
+      let response = await requester
+        .post("/api/products")
+        .send(product)
+        .set("Cookie", `CookieUser=${token}`);
+      productId = response.body.confirmCreateProduct._id;
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  after(async () => {
+    await mongoose.connection
+      .collection("products")
+      .deleteMany({ category: "test" });
+  });
+
+  describe("Prueba Router products", async function () {
+    it('Prueba endpoint GET /products. => Renderiza vista "ViewProducts", junto con un objeto que contiene: error, user, array de productos (10), componentes de paginacion', async function () {
+      let respuesta = await requester
+        .get("/products")
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.ok).to.be.true;
     });
 
-    after(async()=>{
-        await mongoose.connection.collection('products').deleteMany({ category: 'test' });
+    it('Prueba endpoint GET /products/:id  => Renderiza vista "ViewDetailProducts", junto con un objeto que contiene: el producto', async function () {
+      let id = "6574898c4ba22b2e935dfbae"; // ID de un producto existente
+      let respuesta = await requester
+        .get(`/products/${id}`)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.ok).to.be.true;
     });
 
-    describe('Prueba Router products', async function(){
-        it('Prueba endpoint GET /products. => Renderiza vista "ViewProducts", junto con un objeto que contiene: error, user, array de productos (10), componentes de paginacion',async function(){
-            let respuesta = await requester.get('/products').set('Cookie', `CookieUser=${token}`);
-            expect(respuesta.statusCode).to.be.equal(200);
-            expect(respuesta.ok).to.be.true;
-        });
+    it("Prueba endpoint POST /api/products => Permite guardar un producto en BD", async function () {
+      let product = {
+        title: "PRODUCT TESTING SUPERTEST",
+        description: "test",
+        code: "testSPT",
+        price: 22,
+        stock: 22,
+        category: "test",
+      };
 
-        it('Prueba endpoint GET /products/:id  => Renderiza vista "ViewDetailProducts", junto con un objeto que contiene: el producto', async function(){
-            let id = '6574898c4ba22b2e935dfbae'; // ID de un producto existente
-            let respuesta= await requester.get(`/products/${id}`).set('Cookie', `CookieUser=${token}`);
-            expect(respuesta.statusCode).to.be.equal(200);
-            expect(respuesta.ok).to.be.true;
-        });
+      let respuesta = await requester
+        .post("/api/products")
+        .send(product)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.ok).to.be.true;
+    });
 
-        it('Prueba endpoint POST /api/products => Permite guardar un producto en BD', async function(){
-            let product = { title: 'PRODUCT TESTING SUPERTEST', description: 'test', code: 'testSPT', price: 22, stock: 22, category: 'test' };
+    it("Prueba endpoint PUT /api/products/:id => Permite modificar las propiedades de un producto en BD", async function () {
+      let propMod = { title: "TEST PUT", code: v4() };
+      let respuesta = await requester
+        .put(`/api/products/${productId}`)
+        .send(propMod)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.ok).to.be.true;
+    });
 
-            let respuesta = await requester.post('/api/products').send(product).set('Cookie', `CookieUser=${token}`);
-            expect(respuesta.statusCode).to.be.equal(200);
-            expect(respuesta.ok).to.be.true;
-        });
-
-        it('Prueba endpoint PUT /api/products/:id => Permite modificar las propiedades de un producto en BD', async function () {
-            let propMod = { title: 'TEST PUT', code: v4() };
-            let response = await requester.put(`/api/products/${productId}`).send(propMod).set('Cookie', `CookieUser=${token}`);
-            expect(response.statusCode).to.be.equal(200);
-            expect(response.ok).to.be.true;
-        });
-
-        it('Prueba endpoint DELETE /api/products/:id => Permite eliminar un producto. Coloca su dispnibilidad en false.', async function(){
-            // Aquí puedes implementar la prueba para eliminar un producto
-            // No olvides agregar la lógica necesaria para obtener el ID del producto a eliminar
-        });
-    })
+    it("Prueba endpoint DELETE /api/products/:id => Permite eliminar un producto. Coloca su dispnibilidad en false.", async function () {
+      let respuesta = await requester
+        .delete(`/api/products/${productId}`)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.ok).to.be.true;
+    });
+  });
 });

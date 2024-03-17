@@ -18,7 +18,7 @@ export const passportCall=(estrategy)=>{
         passport.authenticate(estrategy, function(err, user, info, status) {
           if (err) { return next(err) }
           if (!user) {
-                
+
                let error = info.message ? info.message : info.toString()
                 return res.redirect(`/errorHandlebars/?error=${error}`)
           }

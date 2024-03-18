@@ -47,6 +47,16 @@ router.get('/current',passportCall('jwt'),securityAcces(["public"]),async(req,re
 
 });
 
+router.post('/user', passportCall('jwt'),securityAcces(["admin", "premiun", "user"]),async(req,res) =>{ 
+  let email = req.body.email
+  console.log(email)
+  let user = await UserController.getUser(req,res,email)
+  if(!user){
+    return res.status(404).json({error: 'Error al recuperar el usuario'})
+  }
+  return res.status(200).json({user})
+})
+
 
 router.get('/products', passportCall('jwt'), securityAcces(["public"]), async (req, res) => {
   try {

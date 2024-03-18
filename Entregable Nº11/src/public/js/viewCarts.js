@@ -26,7 +26,7 @@ cartsForm.addEventListener("submit", (e) => {
         
         }else{ 
           resFetch.classList.add('alert', 'alert-success');
-          resFetch.innerHTML = `Producto Agregado`;
+          resFetch.innerHTML = `CARRITO CREADO`;
       }
     })
       } catch (error) {

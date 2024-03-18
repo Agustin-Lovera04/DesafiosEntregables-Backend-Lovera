@@ -19,5 +19,4 @@ import {
   const upload = multer();
 
 
-
 router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin", "premiun", "user"]),UserController.changeRol);

@@ -152,7 +152,7 @@ export class CartsController {
       }
 
       io.emit("listCarts", await cartsService.getCarts());
-      return res.status(200).json("Carrito Creado" + createCart.title);
+      return res.status(200).json({CarroCreado: createCart.title});
     } catch (error) {
       return CustomError.CustomError('Internal error', 'error interno', STATUS_CODES.ERROR_SERVER,ERRORES_INTERNOS.INTERNAL)
     }

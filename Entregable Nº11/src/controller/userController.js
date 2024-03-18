@@ -61,7 +61,7 @@ function idValid(id, res) {
         } }
 
       static async getUser(req,res,email){
-        console.log('controller')
+        console.log('essoooo')
         console.log(email)
         let user = await userService.getUser(email)
         if(!user){

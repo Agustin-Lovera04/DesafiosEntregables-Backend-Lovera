@@ -1,10 +1,21 @@
-import { describe, it } from "mocha";
-import { expect } from "chai";
+import {
+  describe,
+  it
+} from "mocha";
+import {
+  expect
+} from "chai";
 import supertest from "supertest";
 import mongoose from "mongoose";
-import { config } from "../config/config.js";
-import { v4 } from "uuid";
-import { genToken } from "../utils.js";
+import {
+  config
+} from "../config/config.js";
+import {
+  v4
+} from "uuid";
+import {
+  genToken
+} from "../utils.js";
 
 const requester = supertest("http://localhost:8080");
 
@@ -48,7 +59,9 @@ describe("PRUEBA ROUTER DE PRODUCTS", async function () {
   after(async () => {
     await mongoose.connection
       .collection("products")
-      .deleteMany({ category: "test" });
+      .deleteMany({
+        category: "test"
+      });
   });
 
   describe("Prueba Router products", async function () {
@@ -85,16 +98,22 @@ describe("PRUEBA ROUTER DE PRODUCTS", async function () {
         .set("Cookie", `CookieUser=${token}`);
       expect(respuesta.statusCode).to.be.equal(200);
       expect(respuesta.ok).to.be.true;
+      expect(respuesta._body.confirmCreateProduct).to.exist
     });
 
     it("Prueba endpoint PUT /api/products/:id => Permite modificar las propiedades de un producto en BD", async function () {
-      let propMod = { title: "TEST PUT", code: v4() };
+      let propMod = {
+        title: "TEST PUT",
+        code: v4()
+      };
       let respuesta = await requester
         .put(`/api/products/${productId}`)
         .send(propMod)
         .set("Cookie", `CookieUser=${token}`);
       expect(respuesta.statusCode).to.be.equal(200);
       expect(respuesta.ok).to.be.true;
+      expect(respuesta._body.putProduct.acknowledged).to.be.true
+
     });
 
     it("Prueba endpoint DELETE /api/products/:id => Permite eliminar un producto. Coloca su dispnibilidad en false.", async function () {
@@ -103,6 +122,7 @@ describe("PRUEBA ROUTER DE PRODUCTS", async function () {
         .set("Cookie", `CookieUser=${token}`);
       expect(respuesta.statusCode).to.be.equal(200);
       expect(respuesta.ok).to.be.true;
+      expect(respuesta._body.prodDeleted.acknowledged).to.be.true
     });
   });
 });

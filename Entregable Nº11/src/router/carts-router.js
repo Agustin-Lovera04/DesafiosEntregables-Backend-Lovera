@@ -22,7 +22,7 @@ router.post("/", passportCall('jwt'),upload.none(), securityAcces(["admin"]),Car
 
 router.delete("/:cid/product/:pid",  passportCall('jwt'),securityAcces(["public"]),CartsController.deleteProductInCart);
 
-router.delete("/:cid", passportCall('jwt'),securityAcces(["admin"]),CartsController.deleteAllProductsInCart);
+router.delete("/:cid", passportCall('jwt'),securityAcces(["admin", "premiun"]),CartsController.deleteAllProductsInCart);
 
 router.put("/:id", passportCall('jwt'),securityAcces(["admin"]),CartsController.updateCart);
 

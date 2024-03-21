@@ -20,7 +20,7 @@ export class CartsController {
     try {
       let carts = await cartsService.getCarts();
       if (carts.length <= 0) {
-        console.log("NO HAY CARTS EN BD");
+        return res.status(200).json({message: 'No hay carritos en BD'})
       }
 
       if (req.query.limit) {
@@ -50,13 +50,6 @@ export class CartsController {
         console.log("Error en la búsqueda por ID");
         return null
       }
-/*      let total = 0
-    getCart.products.forEach(product => {
-      const subtotal = product.product.price * product.quantity;
-      total += subtotal;
-    }); 
-    console.log('ESTE ES GET CART ' + getCart) */
-
      return getCart
     } catch (error) {
       return res.status(500).json({
@@ -67,29 +60,32 @@ export class CartsController {
 
   static async addProductInCart(req, res) {
     try {
+/*       console.log('ACAAAAAAAAAAAAAAAAAAAAAAAA')
+      console.log(req.body)
+      let quantity = req.body.quantityProd */
       let { cid } = req.params;
       let valid = idValid(cid, res);
       if (valid) {
         return res.status(400).json({
-          error:error.message
+          error: 'ID INVALIDO'     
           })}
       let { pid } = req.params;
       let validpid = idValid(pid, res);
       if (validpid) {
         return res.status(400).json({
-          error: error.message
+          error: 'ID INVALIDO'
         });
       }
       const product = await productsService.getProductById(pid);
       if (!product) {
         return res.status(404).json({
-          error: error.message
+          error: 'ERROR AL RECUPERAR PRODUCTO'
         });
       }
   
       if(product.stock <= 0){
         return res.status(400).json({
-          error: error.message
+          error: 'NO HAY STOCK'
         });
       }
   
@@ -99,15 +95,12 @@ export class CartsController {
             error: 'No puedes agregar productos creados por ti'});
         } 
       }
+
       let cartMod = await cartsService.addProductInCart(cid, product);
       if (!cartMod) {
         return res.status(500).json({
-          error: CustomError.CustomError(
+          error:
             'Error al agregar producto al carrito',
-            'Error interno al modificar el carrito',
-            STATUS_CODES.INTERNAL_SERVER_ERROR,
-            ERRORES_INTERNOS.OTROS
-          )
         });
       }
       console.log("carro modificado: " + cartMod);
@@ -122,7 +115,7 @@ export class CartsController {
     try {
       let { title } = req.body;
       if (!title) {
-        return "Coloque un titulo";
+        return res.status(404).json({error: 'Coloque un titulo'})
       }
 
       let createCart = await cartsService.createCart(title);

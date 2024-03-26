@@ -36,7 +36,6 @@ router.get('/registro',(req,res)=>{
 
 router.get('/login',(req,res)=>{
   let {error, message} = req.query 
-  
   res.status(200).render('login', {error, message});
 });
 
@@ -163,6 +162,7 @@ router.get('/support', passportCall('jwt'),securityAcces(["admin"]),(req,res)=>{
 /* ERROR HANDLEBAR GENERAL */
 router.get('/errorHandlebars', securityAcces(["public"]),(req,res)=>{
  let {error} = req.query
+ console.log(error)
   res.render('errorHandlebars', {error})
 })
 router.get('/mockingproducts', passportCall('jwt'),securityAcces(["admin"]), async(req,res)=>{

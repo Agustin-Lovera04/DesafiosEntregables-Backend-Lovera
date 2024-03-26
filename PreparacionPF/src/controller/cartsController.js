@@ -60,9 +60,6 @@ export class CartsController {
 
   static async addProductInCart(req, res) {
     try {
-/*       console.log('ACAAAAAAAAAAAAAAAAAAAAAAAA')
-      console.log(req.body)
-      let quantity = req.body.quantityProd */
       let { cid } = req.params;
       let valid = idValid(cid, res);
       if (valid) {
@@ -80,12 +77,6 @@ export class CartsController {
       if (!product) {
         return res.status(404).json({
           error: 'ERROR AL RECUPERAR PRODUCTO'
-        });
-      }
-  
-      if(product.stock <= 0){
-        return res.status(400).json({
-          error: 'NO HAY STOCK'
         });
       }
   

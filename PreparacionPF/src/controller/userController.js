@@ -54,18 +54,16 @@ function idValid(id, res) {
           if(!userMod){
             return res.status(404).json({error: 'ERROR INTERNO'})
           }
-          console.log('se va')
+
           return res.status(200).json({userMod})
         } catch (error) {
           return res.status(500).json({error: error.message})
         } }
 
       static async getUser(req,res,email){
-        console.log('essoooo')
-        console.log(email)
         let user = await userService.getUser(email)
         if(!user){
-          return res.status(404).json({error: 'ERROR AL RECUPERAR USUARIO2'})
+          return null
         }
         return user
       }

@@ -59,3 +59,40 @@ export const securityAcces = (permissions = []) => {
     return next();
   };
 };
+
+
+/* MIDLE MULTER */
+import multer from 'multer'
+
+const storageDocs = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/uploads/documents/`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + file.originalname)
+    }
+})
+
+export const uploadDocs = multer({ storage: storageDocs })
+
+const storageProfile = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, `${__dirname}/uploads/profiles/`)
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + file.originalname)
+  }
+})
+
+export const uploadProfile = multer({ storage: storageProfile })
+
+const storageProduct = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, `${__dirname}/uploads/products/`)
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + file.originalname)
+  }
+})
+
+export const uploadProduct = multer({ storage: storageProduct })

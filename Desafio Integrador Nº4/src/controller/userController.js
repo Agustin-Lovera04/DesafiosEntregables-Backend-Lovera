@@ -8,6 +8,8 @@ import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { userService } from "../services/user.Service.js";
 import bcrypt from "bcrypt";
 import { validPassword } from "../utils.js";
+import { uploadDocs, uploadProfile } from "../utils.js";
+
 
 
 
@@ -30,7 +32,7 @@ function idValid(id, res) {
     
           let getUser = await userService.getUserById(uid);
           if (!getUser) {
-            console.log("Error en la búsqueda por ID");
+
             return null
           }
          return getUser
@@ -43,7 +45,7 @@ function idValid(id, res) {
     
       static async changeRol(req, res, rol){
         try {
-          console.log('LLEGO')
+  
           let user = req.user
           let {rol} = req.body
           if(!rol, !user){
@@ -87,15 +89,40 @@ function idValid(id, res) {
       }
 
       static async last_connection(req,res,id){
-        console.log('ACAAA 1')
-        console.log(id)
+
         
         let putUser = await userService.putUser(id)
         if(!putUser){
-          console.log('ACAAA 3')
-          console.log(putUser)
           return null
         }
         return true
+      }
+
+      static async uploadDocs(req,res){
+        console.log(req)
+        const userId = req.params.uid;
+        const user = await userService.getUserById(userId)
+        if(!user){
+          return res.status(404).json({error: 'Error al recuperar el usuario'})
+        }
+        uploadDocs.single('document')(req,res, async () =>{
+          if(!req.file){
+            return res.status(404).json({error: 'Debe cargar un documento'})
+          }
+          try {
+            let nameFile = req.file.originalname
+            let pathFile = req.file.path
+
+            const pushDoc = await userService.pushDoc(userId, nameFile, pathFile)
+            if(!pushDoc){
+              return res.status(500).json({error: 'Error interno- intente mas tarde'})
+            }
+
+            return res.status(200).json({message: `${nameFile} Cargado correctamente`})
+
+          } catch (error) {
+            return res.status(500).json({error: error.message})
+          }
+        })
       }
 } 

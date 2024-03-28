@@ -12,13 +12,6 @@ import { UserController } from "../controller/userController.js";
 
 export const router = Router();
 
-/* export const auth =(req,res,next)=>{
-  if(!req.session.user){
-    res.redirect('/login?error=Debes iniciar sesion para acceder a la web')
-  }
-  next()
-}
- */
 router.get("/", async (req, res) => {
   try {
     res.status(200).render("index");
@@ -144,8 +137,17 @@ router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["publi
   }
 })
 
-router.get('/users/:uid/documents', async(req,res)=>{
-  res.render('userDocs')
+router.get('/users/premiun/:uid/documents', passportCall('jwt'),securityAcces(["user", "admin", "premiun"]) /* ,midle de validacion si ya cargo docs ,*/,async(req,res)=>{
+  try {
+    let user = await UserController.getUserById(req)
+    if(!user){
+    let error  =  CustomError.CustomError('ERROR ARGUMENTOS', 'NO SE ENCONTRO USUARIO CON EL ID INGRESADO', STATUS_CODES.ERROR_ARGUMENTOS, ERRORES_INTERNOS.ARGUMENTOS)
+      return res.render('errorHandlebars', {error})
+    }
+    res.render('userDocs', {user})
+  } catch (error) {
+    
+  }
 })
 
 router.get('/restablecerPass',(req,res)=>{

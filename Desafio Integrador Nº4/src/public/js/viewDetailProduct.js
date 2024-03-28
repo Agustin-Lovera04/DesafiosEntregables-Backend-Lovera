@@ -1,34 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-/* let quantityProd = 1
-let divCount = document.getElementById('count')
-
-function actualizarCantidad() {
-    divCount.innerHTML = `
-    <button id="restar" class="m-3">-</button>
-    ${quantityProd}
-    <button id="sumar" class="m-3">+</button>
-    `;
-
-    const restarBtn = document.getElementById('restar');
-    const sumarBtn = document.getElementById('sumar');
-    
-    restarBtn.addEventListener('click', restarCantidad);
-    sumarBtn.addEventListener('click', sumarCantidad);
-}
-
-function restarCantidad() {
-    if (quantityProd > 1) {
-        quantityProd--;
-        actualizarCantidad()
-    }
-}
-
-function sumarCantidad() {
-    quantityProd++;
-    actualizarCantidad()
-}
-
-actualizarCantidad() */
 
 const btnAddToCart = document.getElementById("btnAddToCart");
 btnAddToCart.addEventListener("click", async (e) => {

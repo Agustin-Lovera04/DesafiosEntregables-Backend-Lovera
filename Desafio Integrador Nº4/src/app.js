@@ -77,7 +77,7 @@ app.engine(
 app.use("/api/products", productManagerRouter);
 app.use("/api/carts", cartManagerRouter);
 app.use('/api/sessions', sessionsManagerRouter)
-app.use('/api/users/premiun', userManagerRouter)
+app.use('/api/users', userManagerRouter)
 app.use("/", viewsRouter);
 
 app.use(errorHandler)

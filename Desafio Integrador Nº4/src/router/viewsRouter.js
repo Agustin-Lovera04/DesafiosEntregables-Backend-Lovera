@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { productsModel } from "../dao/models/productsModel.js";
-import { passportCall, securityAcces } from "../utils.js";
+import { passportCall, securityAcces, validDocsMiddleware } from "../utils.js";
 import { currentDTO } from "../DTO/currentDTO.js";
 import { ProductsController } from "../controller/productsController.js";
 import { CartsController } from "../controller/cartsController.js";
@@ -124,7 +124,7 @@ router.get('/purchase/:tid',passportCall('jwt'), securityAcces(["public"]), asyn
 
 /* CAMBIO USER ==> PREMIUN */
 
-router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["public"]),async (req,res)=>{
+router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["public"]),validDocsMiddleware,async (req,res)=>{
   try {
     let user = await UserController.getUserById(req)
     if(!user){
@@ -136,6 +136,7 @@ router.get('/api/users/premiun/:uid', passportCall('jwt'), securityAcces(["publi
     return res.status(500).json({error: error.message})
   }
 })
+
 
 router.get('/users/premiun/:uid/documents', passportCall('jwt'),securityAcces(["user", "admin", "premiun"]) /* ,midle de validacion si ya cargo docs ,*/,async(req,res)=>{
   try {

@@ -63,6 +63,7 @@ export const securityAcces = (permissions = []) => {
 
 /* MIDLE MULTER */
 import multer from 'multer'
+import { userService } from "./services/user.Service.js";
 
 const storageDocs = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -80,7 +81,8 @@ const storageProfile = multer.diskStorage({
       cb(null, `${__dirname}/uploads/profiles/`)
   },
   filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + file.originalname)
+    let user = req.user
+      cb(null, user.email + " - " + file.fieldname + '-' + file.originalname)
   }
 })
 
@@ -88,11 +90,43 @@ export const uploadProfile = multer({ storage: storageProfile })
 
 const storageProduct = multer.diskStorage({
   destination: function (req, file, cb) {
-      cb(null, `${__dirname}/uploads/products/`)
+    cb(null, `${__dirname}/uploads/products/`)
   },
   filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + file.originalname)
+    let user = req.user
+      cb(null,user.email + " - " + file.fieldname + '-' + file.originalname)
   }
 })
 
 export const uploadProduct = multer({ storage: storageProduct })
+
+
+
+export const validDocsMiddleware = async (req, res, next) => {
+let user = await userService.getUserById(req.user._id)
+if(!user){
+  return res.status(500).json({error: 'No se recupero usuario'})
+}
+
+  if (user.rol === 'premium') {
+    next()
+  } else {
+
+    if (user.documents && user.documents.length > 0) {
+      const existIdentification = user.documents.some(doc => doc.name == 'Identificación');
+      const existAddress = user.documents.some(doc => doc.name == 'Domicilio');
+      const existStatusCount = user.documents.some(doc => doc.name == 'statusCount');
+      console.log(user)
+      console.log(existIdentification)
+      console.log(existAddress)
+      console.log(existStatusCount)
+      if (existIdentification && existAddress && existStatusCount) {
+        next()
+      } else {
+        res.status(400).json({ error: 'Faltan documentos requeridos.' });
+      }
+    } else {
+      res.status(400).json({ error: 'Faltan documentos requeridos.' });
+    }
+  }
+};

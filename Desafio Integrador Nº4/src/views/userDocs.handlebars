@@ -1,72 +1,69 @@
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center m-1">
         <div class="col-md-8">
             <h1 class="display-4 text-center text-dark">DOCUMENTOS</h1>
             <hr class="hr-divider">
-            <div class="container text-center">
-                <div class="card p-4 m-5">
-                    <h1 class="display-4">¡Bienvenido, {{user.first_name}}!</h1>
+
+            <div class="card p-4 m-5">
+                <h1 class="display-4">¡Bienvenido, {{user.first_name}}!</h1>
+                                {{#if error}}
+                <div class="alert alert-danger">
+                    {{error}}
                 </div>
+                {{/if}}
+                {{#if message}}
+                <div class="alert alert-success">
+                    {{message}}
+                </div>
+                {{/if}}
             </div>
+
             <form action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <h5 class="form-label"><strong>INSERTE DOCUMENTO</strong></h5>
                     <div class="input-group">
-                        <input type="file" name="document" accept="image/*" class="form-control m-1" {{!-- required
-                            --}}>
-                        <div class="input-group-append">
-                            <input type="submit" value="Adjuntar" class="btn btn-primary btn-lg">
-                        </div>
+                        <input type="file" name="document" accept="image/*" class="form-control m-1" required>
+                    </div>
+                    <div class="input-group mt-2">
+                        <select name="documentType" class="form-control" required>
+                            <option value="" disabled selected hidden>Seleccione su documentación</option>
+                            <option value="Identificacion">Identificación</option>
+                            <option value="Domicilio">Domicilio</option>
+                            <option value="statusCount">statusCount</option>
+                        </select>
+                    </div>
+                    <div class="text-center mt-3">
+                        <input type="submit" value="Adjuntar" class="btn btn-primary">
                     </div>
                 </div>
             </form>
+
             <form action="http://localhost:8080/api/users/{{user._id}}/profile" method="post"
                 enctype="multipart/form-data">
-                <div class="form-group">
-                    <h5 class="form-label"><strong>INSERTE IIMAGEN DE PERFIL</strong></h5>
+                <div class="form-group mt-5">
+                    <h5 class="form-label"><strong>INSERTE IMAGEN DE PERFIL</strong></h5>
                     <div class="input-group">
                         <input type="file" name="profile" accept="image/*" class="form-control m-1" required>
-                        <div class="input-group-append">
-                            <input type="submit" value="ADJUNTAR" class="btn btn-primary btn-lg"></input>
-                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <input type="submit" value="Adjuntar" class="btn btn-primary">
                     </div>
                 </div>
-        </div>
-        </form>
-        {{!-- <form action="http://localhost:8080/api/users/{{user._id}}/product" method="post"
-            enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="Documento" class="form-label"><strong>INSERTE DOCUMENTO</strong></label>
-                <div class="input-group">
-                    <input type="file" name="identificacion" accept="image/*" class="form-control m-1" required>
-                    <div class="input-group-append">
-                        <input type="submit" value="ADJUNTAR" class="btn btn-primary btn-lg"></input>
+            </form>
+
+            <form action="http://localhost:8080/api/users/{{user._id}}/product" method="post"
+                enctype="multipart/form-data">
+                <div class="form-group mt-5">
+                    <h5 class="form-label"><strong>INSERTE IMAGEN DE PRODUCTO</strong></h5>
+                    <div class="input-group">
+                        <input type="file" name="product" accept="image/*" class="form-control m-1" required>
+                    </div>
+                    <div class="text-center mt-2">
+                        <input type="submit" value="Adjuntar" class="btn btn-primary">
                     </div>
                 </div>
-            </div>
-    </div>
-    </form> --}}
-    {{!--
-    <div class="form-group">
-        <label for="Perfil" class="form-label"><strong>INSERTE IMAGEN DE PERFIL</strong></label>
-        <div class="input-group">
-            <input type="file" name="PERFIL" class="form-control m-1" id="Perfil">
-            <div class="input-group-append">
-                <button type="submit" value="upload" class="btn btn-primary btn-lg">ADJUNTAR</button>
-            </div>
+            </form>
+
         </div>
     </div>
-
-    <div class="form-group">
-        <label for="Producto" class="form-label"><strong>INSERTE IMAGEN DE PRODUCTO</strong></label>
-        <div class="input-group">
-            <input type="file" name="PRODUCTO" class="form-control m-1" id="Producto">
-            <div class="input-group-append">
-                <button type="submit" value="upload" class="btn btn-primary btn-lg">ADJUNTAR</button>
-            </div>
-        </div> --}}
-    </div>
-</div>
-
-{{>menu2}}
 </div>

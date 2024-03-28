@@ -108,7 +108,9 @@ export class UserDAO {
       name: nameFile,
       reference: pathFile
     }
-    let userPush = userModel.updateOne({_id: userId}, {$push: {documents: newDoc}})
+    let userPush = await userModel.updateOne({_id: userId}, {$push: {documents: newDoc}})
     console.log(userPush)
+    return userPush
   }
+  
 }

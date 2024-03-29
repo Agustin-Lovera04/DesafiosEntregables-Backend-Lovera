@@ -34,10 +34,7 @@ export class ProductsDAO{
     
 
        async getProductById(id) {
-        console.log('entro')
         let getProduct;
-        console.log('IDDDD')
-        console.log(id)
         try {
           getProduct = await productsModel.findOne({ status: true, _id: id });
           console.log('PRODUCT');

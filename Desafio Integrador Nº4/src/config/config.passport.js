@@ -152,17 +152,4 @@ passport.use('github', new github.Strategy(
         }
     }
 ))
-};
-
-/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
-
-/* serializador y desserializador 
-passport.serializeUser((user,done)=>{
-    return done(null, user._id)
-})
-
-passport.deserializeUser(async(id,done)=>{
-    let user= await userModel.findById(id)
-    return done(null, user)
-})
- */
+}

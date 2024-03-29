@@ -9,7 +9,6 @@ import { sendMail } from "../mails/mails.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { CustomError } from "../utils/customError.js";
 
-/* import { MyRouter } from "./router.js"; */
 export const router = Router();
 
 router.post('/registro',passportCall('register'),async(req,res)=>{

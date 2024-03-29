@@ -113,20 +113,28 @@ if(!user){
   } else {
 
     if (user.documents && user.documents.length > 0) {
-      const existIdentification = user.documents.some(doc => doc.name == 'Identificación');
+      const existIdentification = user.documents.some(doc => doc.name == 'Identificacion');
       const existAddress = user.documents.some(doc => doc.name == 'Domicilio');
       const existStatusCount = user.documents.some(doc => doc.name == 'statusCount');
-      console.log(user)
-      console.log(existIdentification)
-      console.log(existAddress)
-      console.log(existStatusCount)
       if (existIdentification && existAddress && existStatusCount) {
         next()
       } else {
-        res.status(400).json({ error: 'Faltan documentos requeridos.' });
+        let error = CustomError.CustomError(
+          "NO AUTORIZADO",
+          "FALTAN DOCUMENTOS REQUERIDOS",
+          STATUS_CODES.ERROR_AUTENTICACION,
+          ERRORES_INTERNOS.PERMISOS
+        );
+        return res.render("errorHandlebars", { error });
       }
     } else {
-      res.status(400).json({ error: 'Faltan documentos requeridos.' });
+      let error = CustomError.CustomError(
+        "NO AUTORIZADO",
+        "FALTAN DOCUMENTOS REQUERIDOS",
+        STATUS_CODES.ERROR_AUTENTICACION,
+        ERRORES_INTERNOS.PERMISOS
+      );
+      return res.render("errorHandlebars", { error });
     }
   }
-};
+}

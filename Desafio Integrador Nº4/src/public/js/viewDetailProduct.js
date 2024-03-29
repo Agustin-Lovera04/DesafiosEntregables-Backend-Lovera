@@ -10,7 +10,6 @@ btnAddToCart.addEventListener("click", async (e) => {
             try {
               const response = await fetch(`http://localhost:8080/api/carts/${cid}/product/${productId}`, {
                 method: "POST",
-/*                 body: quantityProd */
               });
           
               const data = await response.json();

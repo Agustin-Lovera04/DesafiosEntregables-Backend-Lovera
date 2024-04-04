@@ -59,3 +59,95 @@ export const securityAcces = (permissions = []) => {
     return next();
   };
 };
+
+
+/* MIDLE MULTER */
+import multer from 'multer'
+import { userService } from "./services/user.Service.js";
+
+const storageDocs = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/uploads/documents/`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + file.originalname)
+    }
+})
+
+export const uploadDocs = multer({ storage: storageDocs })
+
+const storageProfile = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, `${__dirname}/uploads/profiles/`)
+  },
+  filename: function (req, file, cb) {
+    let user = req.user
+      cb(null, user.email + " - " + file.fieldname + '-' + file.originalname)
+  }
+})
+
+export const uploadProfile = multer({ storage: storageProfile })
+
+const storageProduct = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, `${__dirname}/uploads/products/`)
+  },
+  filename: function (req, file, cb) {
+    let user = req.user
+      cb(null,user.email + " - " + file.fieldname + '-' + file.originalname)
+  }
+})
+
+export const uploadProduct = multer({ storage: storageProduct })
+
+
+
+export const validDocsMiddleware = async (req, res, next) => {
+let user = await userService.getUserById(req.user._id)
+if(!user){
+  return res.status(500).json({error: 'No se recupero usuario'})
+}
+
+  if (user.rol === 'premium') {
+    next()
+  } else {
+
+    if (user.documents && user.documents.length > 0) {
+      const existIdentification = user.documents.some(doc => doc.name == 'Identificacion');
+      const existAddress = user.documents.some(doc => doc.name == 'Domicilio');
+      const existStatusCount = user.documents.some(doc => doc.name == 'statusCount');
+      if (existIdentification && existAddress && existStatusCount) {
+        next()
+      } else {
+        let error = CustomError.CustomError(
+          "NO AUTORIZADO",
+          "FALTAN DOCUMENTOS REQUERIDOS",
+          STATUS_CODES.ERROR_AUTENTICACION,
+          ERRORES_INTERNOS.PERMISOS
+        );
+        return res.render("errorHandlebars", { error });
+      }
+    } else {
+      let error = CustomError.CustomError(
+        "NO AUTORIZADO",
+        "FALTAN DOCUMENTOS REQUERIDOS",
+        STATUS_CODES.ERROR_AUTENTICACION,
+        ERRORES_INTERNOS.PERMISOS
+      );
+      return res.render("errorHandlebars", { error });
+    }
+  }
+}
+
+export const existDoc = async (req, res, next) =>{
+  if(!req.file){
+    let error = CustomError.CustomError(
+      "NO AUTORIZADO",
+      "DEBE ENVIAR DOCUMENTOS",
+      STATUS_CODES.ERROR_AUTENTICACION,
+      ERRORES_INTERNOS.PERMISOS
+    );
+    return res.status(404).json({error: error.message})
+  }
+  next()
+}

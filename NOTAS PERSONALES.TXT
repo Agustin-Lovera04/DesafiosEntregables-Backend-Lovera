@@ -1,18 +1,35 @@
 OJOOOOOOO QUE ELIMINE MANAGER MONGO, PROBAR TODO SI SIGUEN ANDANDO......
 -----HAY UN ENDPOINT POST EN VIEWSROUTER /USER controlar que es porque no se---
 
---------------PARA PORTFOLIO Y PF----------
-------MODIFICAR Y CORREGIR LOS STATUS CODES DE RESPUESTASS----
------SWAGGER CORREGIR Y PULIR-----
------PROBAR TODO DESDE POSTMAN-----
---TESTING POR COSAS MAS PUNTUALES ( !!!!   ERRORES   !!! ETC)
----CAMBIAR EL BACK, Y PONER CATALOGO DE BOTINES, EN PROYECTO DE JS----
+EN PROCESO:
+- Seccion 7, punto 16- Modificar Usuario admin - OK, y hardcod github a .env
 
-----MANEJO DE ERRORES----
--Midlewars OK
--Vistas OK
--Controller
--Dao
+
+------PARA PF------( Voy a ajustar y pulir todo lo que sea consigna primero, luego si quiero ir a portafolio habra que mejorar mas cosas)
+
+Anoto todas las cosas que voy corrigiendo.
+
+-Testing endpoint requeridos completos ( inicio del proyecto - OK, alta producto - OK, alta carrito - OK, logio - OK, registro usuario - OK, inserción de productos en un carrito - OK)
+
+-MANEJO DE ERRORES (VOLVER A TESTEAR TODO)
+
+-HICE CAMBIOS EN HABDLEBARS, INSTALLE HELPERS, CAMBIE CONFIG DE HANDLE EN APP, AGREGUE VALIDACION EN LA VISTA POR STOCK (TODAS VISTAS ECHAS)
+
+-SECURITTY ACCES CON FETCH, SOLUCIONADO, SEGUIR CON MANEJO DE ERRORES
+
+-Doc Swagger ( solo metodo get y post de products, y post de addProductCart)
+
+-puse cartelito de warning de productos que no se compraron en ticket de compra
+
+-MANEJO DE ERRORES
+
+
+
+
+
+
+
+
 
 ---TESTING (RUTAS SIN TEST)----
 -logeo con github
@@ -24,21 +41,8 @@ OJOOOOOOO QUE ELIMINE MANAGER MONGO, PROBAR TODO SI SIGUEN ANDANDO......
 -errorHandleabars
 -purchase
 
-
-
-------PARA PF------( Voy a ajustar y pulir todo lo que sea consigna primero, luego si quiero ir a portafolio habra que mejorar mas cosas)
-
-Anoto todas las cosas que voy corrigiendo.
-
--HICE CAMBIOS EN HABDLEBARS, INSTALLE HELPERS, CAMBIE CONFIG DE HANDLE EN APP, AGREGUE VALIDACION EN LA VISTA POR STOCK (TODAS VISTAS ECHAS)
-
--SECURITTY ACCES CON FETCH, SOLUCIONADO, SEGUIR CON MANEJO DE ERRORES
-
--Doc Swagger ( solo metodo get y post de products, y post de addProductCart)
-
--puse cartelito de warning de productos que no se compraron en ticket de compra
-
--VOY A POR ESTO---------------------
-
-QUEDE ACA, ANALIZAR COMO HACER SI DESCONTAR DEL STOCK CUNADO SSE AGREGA AL CARRITO O QUE ONDA
----VALIDAR STOCK EN EL MISMO CARRITO(voy por esto), Y CUANDO SE QUIERE AGREGAR UN PRODUCTO SIN STOCK(solucionado cuando el stock es 0, no lo deja, con handlebars.helper) (SE MODIFICAN SOLAMENTE CUANBDO CONFIRMO LA COMPRA)---
+--------------PARA PORTFOLIO Y PF----------
+-----SWAGGER CORREGIR Y PULIR-----
+-----PROBAR TODO DESDE POSTMAN-----
+--TESTING POR COSAS MAS PUNTUALES ( !!!!   ERRORES   !!! ETC)
+---CAMBIAR EL BACK, Y PONER CATALOGO DE BOTINES, EN PROYECTO DE JS----  

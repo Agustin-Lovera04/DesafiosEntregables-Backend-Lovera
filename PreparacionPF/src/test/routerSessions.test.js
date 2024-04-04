@@ -18,7 +18,7 @@ import {
 const requester = supertest("http://localhost:8080");
 
 describe('TESTING A ROUTER DE SESSIONS', function () {
-    this.timeout(5000);
+    this.timeout(7000);
     let user = {
         first_name: "Aguss",
         last_name: "Lovera TEST",
@@ -48,16 +48,112 @@ describe('TESTING A ROUTER DE SESSIONS', function () {
                 title: "Carro de: Lovera TEST"
             });
     })
-    it('Prueba endpoint POST /registro => Registra un usuario en BD, en caso de exito rerige a /login', async function () {
+    it('Prueba endpoint POST con ERROR COMPLETE DATOS /registro => Registra un usuario en BD, en caso de exito rerige a /login', async function () {
+        let userIncompleto = {
+            email: "testing@testing.com",
+            password: "wwwPPP",
+            rol: "premiun",
+        }
+        let respuesta = await requester
+        .post('/api/sessions/registro')
+        .send({
+            ...userIncompleto
+        });
+        expect(respuesta.statusCode).to.equal(200);
+        expect(respuesta.text).to.include('COMPLETE LOS DATOS')
+        
+    });
+    it('Prueba endpoint POST con ERROR EMAIL INVALIDO /registro => Registra un usuario en BD, en caso de exito rerige a /login', async function () {
+        let userIncompleto = {
+            first_name: "Aguss",
+            last_name: "Lovera TEST",
+            age: 20,
+            email: "testingtesting",
+            password: "wwwPPP",
+            rol: "premiun",
+        }
         let respuesta = await requester
             .post('/api/sessions/registro')
             .send({
-                ...user
+                ...userIncompleto
             });
+        expect(respuesta.statusCode).to.equal(200);
+        expect(respuesta.text).to.include('EMAIL INVALIDO')
+    });
+    
+    it('Prueba endpoint POST /registro => Registra un usuario en BD, en caso de exito rerige a /login', async function () {
+        let respuesta = await requester
+        .post('/api/sessions/registro')
+        .send({
+            ...user
+        });
         expect(respuesta.statusCode).to.equal(302);
         expect(respuesta.headers.location).to.equal('/login');
     });
+    it('Prueba endpoint POST con ERROR YA EXISTEN USUARIOS /registro => Registra un usuario en BD, en caso de exito rerige a /login', async function () {
+        let userIncompleto = {
+            first_name: "Aguss",
+            last_name: "Lovera TEST",
+            age: 20,
+            email: "testing@testing.com",
+            password: "wwwPPP",
+            rol: "premiun",
+        }
+        let respuesta = await requester
+            .post('/api/sessions/registro')
+            .send({
+                ...userIncompleto
+            });
+        expect(respuesta.statusCode).to.equal(200);
+        expect(respuesta.text).to.include('YA EXISTEN USUARIOS EN BD CON ESE EMAIL')
+    });
+    
+    
+    it('Prueba endpoint POST con ERROR MISSING CREDENTIALS /login => Registra un usuario en BD, en caso de exito rerige a /current. Adenas genera un token de seguridad que se guarda en cookies.', async function () {
+        let datos = {
+            email: user.email
+                }
+        let respuesta = await requester.post('/api/sessions/login').send({
+            ...datos
+        })
+       expect(respuesta.statusCode).to.equal(200);
+       expect(respuesta.text).to.include('Missing credentials');
+    })
 
+
+    it('Prueba endpoint POST con ERROR EMAIL INVALIDO /login => Registra un usuario en BD, en caso de exito rerige a /current. Adenas genera un token de seguridad que se guarda en cookies.', async function () {
+        let datos = {
+            email: "emailInvalido",
+            password: "111"
+                }
+        let respuesta = await requester.post('/api/sessions/login').send({
+            ...datos
+        })
+       expect(respuesta.statusCode).to.equal(200);
+       expect(respuesta.text).to.include('EMAIL INVALIDO');
+    })
+    it('Prueba endpoint POST con ERROR DATOS INVALIDOS /login => Registra un usuario en BD, en caso de exito rerige a /current. Adenas genera un token de seguridad que se guarda en cookies.', async function () {
+        let datos = {
+            email: "emailerroneo@erroneo.com",
+            password: "111"
+                }
+        let respuesta = await requester.post('/api/sessions/login').send({
+            ...datos
+        })
+       expect(respuesta.statusCode).to.equal(200);
+       expect(respuesta.text).to.include('DATOS INVALIDOS');
+    })
+    it('Prueba endpoint POST con ERROR DATOS INVALIDOS (CONTRASEÑA) /login => Registra un usuario en BD, en caso de exito rerige a /current. Adenas genera un token de seguridad que se guarda en cookies.', async function () {
+        let datos = {
+            email: user.email,
+            password: "111"
+                }
+        let respuesta = await requester.post('/api/sessions/login').send({
+            ...datos
+        })
+       expect(respuesta.statusCode).to.equal(200);
+       expect(respuesta.text).to.include('DATOS INVALIDOS');
+    })
     it('Prueba endpoint POST /login => Registra un usuario en BD, en caso de exito rerige a /current. Adenas genera un token de seguridad que se guarda en cookies.', async function () {
         let datos = {
             email: user.email,
@@ -80,11 +176,11 @@ describe('TESTING A ROUTER DE SESSIONS', function () {
         expect(respuesta.statusCode).to.be.equal(200);
         expect(respuesta.ok).to.be.true;
     })
-
     it('Prueba endpoint GET /logout =>Elimina las cookies, Cerrando asi la sesion del usuario, en caso de exito Redirige a vista login.', async function () {
         let token = await genToken(user)
         let respuesta = await requester.get('/api/sessions/logout').set("Cookie", `CookieUser=${token}`);
         expect(respuesta.statusCode).to.be.equal(302)
         expect(respuesta.headers.location).to.equal('/login');
-    })
+    });
+
 });

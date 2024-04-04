@@ -125,8 +125,6 @@ deleteForm.addEventListener("submit", (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-/*   const elemento = document.querySelector('#cartUser');
-  const cart = elemento ? elemento.getAttribute('cart') : null; */
 
   const btnsAddToCart = document.querySelectorAll(".btnAddToCart");
 

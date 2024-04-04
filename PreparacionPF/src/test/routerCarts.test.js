@@ -85,6 +85,24 @@ describe('TESTING A ROUTER DE CARTS', async function () {
       expect(respuesta.ok).to.be.true;
     })
 
+    it('Prueba endpoint POST CON ERROR Producto invalido /api/carts/:cid/product/:pid => Recupera un carrito y un producto, que llega por params, y en caso de darse las condiciones, se agrega el producto a el carrito.', async function () {
+      /* HARCODEADO PRODYCTO suzuki (invalido) */
+      let respuesta = await requester
+        .post(`/api/carts/${cartId}/product/6574898c4ba22b2e935d`)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(404);
+      expect(respuesta.ok).to.be.false
+      expect(respuesta._body.cartMod).to.not.exist
+    })
+    it('Prueba endpoint POST CON ERROR Carrito Id invalido /api/carts/:cid/product/:pid => Recupera un carrito y un producto, que llega por params, y en caso de darse las condiciones, se agrega el producto a el carrito.', async function () {
+      let idCartInvalido = "invalid"
+      let respuesta = await requester
+        .post(`/api/carts/${idCartInvalido}/product/6574898c4ba22b2e935dfbc2`)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(404);
+      expect(respuesta.ok).to.be.false
+      expect(respuesta._body.cartMod).to.not.exist
+    })
     it('Prueba endpoint POST /api/carts/:cid/product/:pid => Recupera un carrito y un producto, que llega por params, y en caso de darse las condiciones, se agrega el producto a el carrito.', async function () {
       /* HARCODEADO PRODYCTO suzuki */
       let respuesta = await requester
@@ -113,6 +131,21 @@ describe('TESTING A ROUTER DE CARTS', async function () {
       expect(respuesta.statusCode).to.be.equal(200)
       expect(respuesta.ok).to.be.true
       expect(respuesta._body.CarroCreado).exist
+    })
+    it('Prueba endpoint POST con ERROR /api/carts => NO se envia un titulo', async function () {
+      let userADMIN = {
+        first_name: "Aguss",
+        last_name: "Lovera",
+        age: 20,
+        email: "testing@testingADMIN.com",
+        password: "wwwPPP",
+        rol: "Admin",
+      };
+      let tokenADMIN = await genToken(userADMIN)
+      let respuesta = await requester.post('/api/carts').set("Cookie", `CookieUser=${tokenADMIN}`);
+      expect(respuesta.statusCode).to.be.equal(403)
+      expect(respuesta.ok).to.be.false
+      expect(respuesta._body.CarroCreado).to.not.exist
     })
 
     it('Prueba endpoint DELETE /api/carts/:cid/product/:pid => Se encarga de borrar el producto obtenido por id, en el carrito tambien obtenido por params', async function () {

@@ -7,6 +7,7 @@ import passportJWT from 'passport-jwt'
 import {cartsService } from "../services/carts.Service.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { CustomError } from "../utils/customError.js";
+import { config } from "./config.js";
 
 const searchToken=(req)=>{
   let token = null
@@ -44,8 +45,8 @@ export const initPassport = () => {
         }
         let user;
         if (
-            email === "adminCoder@coder.com" &&
-            password === "adminCod3r123"
+            email === config.EADMIN &&
+            password === config.PADMIN
           ) {
             user= await userModel.create({
               first_name,last_name,age,
@@ -127,22 +128,21 @@ export const initPassport = () => {
   ))
 
 passport.use('github', new github.Strategy(
-    {         clientID: 'Iv1.2581244253dcd9ee',
-        clientSecret:'3d422d408c339ba7fca72c0e2e20a697ae67ef35',
-        callbackURL:'http://localhost:8080/api/sessions/callbackGithub'  
-/*         clientID: '',
-        clientSecret:'',
-        callbackURL:''   */
+    {         clientID: config.clientID,
+        clientSecret:config.clientSecret,
+        callbackURL:config.callbackURL  
     },
     async( accesToken,refreshToken,profile,done)=>{
         try {
             let user = await userModel.findOne({email: profile._json.email}).lean()
             if(!user){
+              let cartTitle = `Carro de: ${profile._json.name}`
+              let cart = await cartsService.createCart(cartTitle)
                 let newUser={
                     first_name: profile._json.name,
                     email: profile._json.email,
                     profile,
-                    cart: [{ cart: "657a877e2197c85449ab36b2" }]
+                    cart: cart
                 }
                 user = await userModel.create(newUser)
             }
@@ -152,17 +152,4 @@ passport.use('github', new github.Strategy(
         }
     }
 ))
-};
-
-/* BORRAMOS TODA CONFIGURACION DE SESSIONS-------------------------------- */
-
-/* serializador y desserializador 
-passport.serializeUser((user,done)=>{
-    return done(null, user._id)
-})
-
-passport.deserializeUser(async(id,done)=>{
-    let user= await userModel.findById(id)
-    return done(null, user)
-})
- */
+}

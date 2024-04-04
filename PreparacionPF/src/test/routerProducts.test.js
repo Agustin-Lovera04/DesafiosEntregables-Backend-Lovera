@@ -74,7 +74,7 @@ describe("PRUEBA ROUTER DE PRODUCTS", async function () {
     });
 
     it('Prueba endpoint GET /products/:id  => Renderiza vista "ViewDetailProducts", junto con un objeto que contiene: el producto', async function () {
-      let id = "6574898c4ba22b2e935dfbae"; // ID de un producto existente
+      let id = productId; // ID de un producto existente
       let respuesta = await requester
         .get(`/products/${id}`)
         .set("Cookie", `CookieUser=${token}`);
@@ -96,10 +96,46 @@ describe("PRUEBA ROUTER DE PRODUCTS", async function () {
         .post("/api/products")
         .send(product)
         .set("Cookie", `CookieUser=${token}`);
-      expect(respuesta.statusCode).to.be.equal(200);
+      expect(respuesta.statusCode).to.be.equal(201);
       expect(respuesta.ok).to.be.true;
       expect(respuesta._body.confirmCreateProduct).to.exist
-    });
+    })
+    
+    it("Prueba endpoint POST con ERROR /api/products => Permite guardar un producto en BD", async function () {
+      let product = {
+        title: "PRODUCT TESTING SUPERTEST",
+        stock: 22,
+        category: "test",
+      };
+
+      let respuesta = await requester
+        .post("/api/products")
+        .send(product)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(400);
+      expect(respuesta.ok).to.be.false;
+      expect(respuesta._body.confirmCreateProduct).to.not.exist
+    })
+
+    it("Prueba endpoint POST con ERROR /api/products => Permite guardar un producto en BD", async function () {
+      let product = {
+        title: 12,
+        description: 12,
+        code: "testSPT",
+        price: 22,
+        stock: 22,
+        category: "test",
+      };
+
+      let respuesta = await requester
+        .post("/api/products")
+        .send(product)
+        .set("Cookie", `CookieUser=${token}`);
+      expect(respuesta.statusCode).to.be.equal(400);
+      expect(respuesta.ok).to.be.false;
+      expect(respuesta._body.confirmCreateProduct).to.not.exist
+    })
+    
 
     it("Prueba endpoint PUT /api/products/:id => Permite modificar las propiedades de un producto en BD", async function () {
       let propMod = {

@@ -132,13 +132,13 @@ export class ProductsController {
         owner
       );
       if (!confirmCreateProduct) {
-        return res.status(404).json({
+        return res.status(500).json({
           error: "error al crear",
         });
       }
 
       io.emit("listProduct", await productsService.getProducts());
-      return res.status(200).json({
+      return res.status(201).json({
         confirmCreateProduct,
       });
     } catch (error) {
@@ -156,29 +156,32 @@ export class ProductsController {
       } = req.params;
       let valid = idValid(id);
       if (valid) {
-        return null;
+        return res.status(404).json({
+          error: "NO SE ENCONTRO PRODUCTO"
+        });
       }
   
       let getProductById = await productsService.getProductById(id);
       if (!getProductById) {
-        console.log("Error en busqueda por ID");
-        return null;
+        return res.status(404).json({
+          error: "NO SE ENCONTRO PRODUCTO"
+        });
       }
   
       if (req.body._id) {
-        return res.status(400).json({
+        return res.status(403).json({
           error: "no se puede modificar la propiedad _id"
         });
       }
 
       if(req.user.rol !== "Admin"){
         if(req.user.email !== getProductById.owner){
-          return res.status(404).json({error: 'SOLO PUEDES MODIFICAR LOS PRODUCTOS CREADOS POR TI'})
+          return res.status(403).json({error: 'SOLO PUEDES MODIFICAR LOS PRODUCTOS CREADOS POR TI'})
         } 
       }
       let putProduct = await productsService.updateProduct(id, req.body);
       if (!putProduct) {
-        res.status(404).json({
+        res.status(500).json({
           error: "error al modificar"
         });
         return null;
@@ -201,17 +204,20 @@ static async deleteProduct(req,res){
     } = req.params;
     let valid = idValid(id);
     if (valid) {
-      return null;
+      return res.status(404).json({
+        error: "NO SE ENCONTRO PRODUCTO"
+      });
     }
 
     let getProductById = await productsService.getProductById(id);
     if (!getProductById) {
-      console.log("Error en busqueda por ID");
-      return null;
+      return res.status(404).json({
+        error: "NO SE ENCONTRO PRODUCTO"
+      });
     }
     if(req.user.rol !== "Admin"){
       if(req.user.email !== getProductById.owner){
-        return res.status(404).json({error: 'SOLO PUEDES ELIMINAR LOS PRODUCTOS CREADOS POR TI'})
+        return res.status(403).json({error: 'SOLO PUEDES ELIMINAR LOS PRODUCTOS CREADOS POR TI'})
       } 
     }
     let prodDeleted = await productsService.deleteProduct(id)

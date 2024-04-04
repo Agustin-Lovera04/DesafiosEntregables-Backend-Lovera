@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { userModel } from "../dao/models/usersModel.js";
 import passport from "passport";
-import { genToken, hashearPass, passportCall, validPassword } from "../utils.js";
+import { genToken, hashearPass, passportCall, securityAcces, validPassword } from "../utils.js";
 import { UserController } from "../controller/userController.js";
 import jwt from 'jsonwebtoken'
 import { TOKENKEY } from "../utils.js";
@@ -9,7 +9,6 @@ import { sendMail } from "../mails/mails.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
 import { CustomError } from "../utils/customError.js";
 
-/* import { MyRouter } from "./router.js"; */
 export const router = Router();
 
 router.post('/registro',passportCall('register'),async(req,res)=>{
@@ -22,11 +21,15 @@ try {
   return redirect('/errorServer')
 }})
 
-router.post('/login', passportCall('login'), (req, res) => {
+router.post('/login', passportCall('login'), async (req, res) => {
   if (req.error) {
-      return res.redirect(`/login/?error=${req.error}`);
+      return res.status(400).redirect(`/login/?error=${req.error}`);
   }
-
+  let id = req.user._id
+  let last_connection = await UserController.last_connection(req,res,id)
+  let error  =  CustomError.CustomError('ERROR SERVER', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+  if(!last_connection){ return res.status(404).render('errorHandlebars', { error })
+}
   let token = genToken(req.user);
   res.cookie('CookieUser', token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
   res.redirect('/current');
@@ -45,7 +48,21 @@ router.get('/callbackGithub',passportCall('github'),
   })
 
 
-  router.get('/logout',async(req,res)=>{
+  router.get('/logout',passportCall('jwt'),async(req,res)=>{
+    let id = req.user._id
+    if(!req.user._id || req.user._id === undefined){
+      let user = await UserController.getUser(req,res,req.user.email)
+      if(!user){
+        let error  =  CustomError.CustomError('ERROR', 'ERROR AL RECUPERAR USUARIO', STATUS_CODES.ERROR_DATOS_ENVIADOS, ERRORES_INTERNOS.ARGUMENTOS)
+        return res.status(404).render('errorHandlebars', { error })
+      }
+      id = user._id
+    }
+    let last_connection = await UserController.last_connection(req,res,id)
+    let error  =  CustomError.CustomError('ERROR SERVER', 'ERROR INTERNO', STATUS_CODES.ERROR_SERVER, ERRORES_INTERNOS.DATABASE)
+    if(!last_connection){
+      return res.status(404).render('errorHandlebars', { error })
+  }
     res.clearCookie('CookieUser')
     res.redirect('/login')
   })

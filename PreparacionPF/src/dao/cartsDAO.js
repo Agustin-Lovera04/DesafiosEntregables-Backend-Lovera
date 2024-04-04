@@ -62,7 +62,7 @@ export class CartsDAO{
             console.log(cartMod);
             if (cartMod.modifiedCount > 0) {
               console.log("Modificado");
-              let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product') */ 
+              let cart = await cartsModel.findOne({ _id: cid })
               return cart;
             }
           } catch (error) {
@@ -118,7 +118,7 @@ export class CartsDAO{
             console.log(cartMod);
             if (cartMod.modifiedCount > 0) {
               console.log("Modificado");
-              let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
+              let cart = await cartsModel.findOne({ _id: cid })
               return cart;
             }
           } catch (error) {
@@ -155,7 +155,7 @@ export class CartsDAO{
           console.log(cartMod);
           if (cartMod.modifiedCount > 0) {
             console.log("Modificado");
-            let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
+            let cart = await cartsModel.findOne({ _id: cid })
             return cart;
           }
         } catch (error) {
@@ -233,7 +233,7 @@ export class CartsDAO{
           console.log(cartMod);
           if (cartMod.modifiedCount > 0) {
             console.log("Modificado");
-            let cart = await cartsModel.findOne({ _id: cid })/* .populate('products.product')  */
+            let cart = await cartsModel.findOne({ _id: cid })
             return cart;
           }
         } catch (error) {

@@ -1,22 +1,11 @@
 import {
   Router
 } from "express";
-import {
-  ManagerProducts
-} from "../dao/managerMongo/managerProductsMongo.js";
-import {
-  productsModel
-} from "../dao/models/productsModel.js";
 import multer from "multer";
-import mongoose from "mongoose";
-import {
-  io
-} from "../app.js";
-
 import { passportCall, securityAcces } from "../utils.js";
 import { ProductsController } from "../controller/productsController.js";
 export const router = Router();
-export const managerProducts = new ManagerProducts();
+
 
 /* MANEJO FORM DATA */
 const upload = multer();

@@ -10,7 +10,12 @@ const usersEsquema = new mongoose.Schema(
         age: Number,
         password: String,
         cart: {},
-        rol: {type: String, default: 'user'}
+        rol: {type: String, default: 'user'},
+        documents:[{
+            name: {type: String, required: false},
+            reference: {type: String, required: false}
+        }],
+        last_connection: {type: Date, required: false }
     },
     {
         timestamps: {

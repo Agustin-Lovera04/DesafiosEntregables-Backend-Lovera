@@ -6,6 +6,7 @@ import { ticketService } from "../services/ticket.Service.js";
 import { v4 } from "uuid";
 import { CustomError } from "../utils/customError.js";
 import { ERRORES_INTERNOS, STATUS_CODES } from "../utils/tiposError.js";
+import { sendMail } from "../mails/mails.js";
 
 function idValid(id, res) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -63,13 +64,13 @@ export class CartsController {
       let { cid } = req.params;
       let valid = idValid(cid, res);
       if (valid) {
-        return res.status(400).json({
+        return res.status(404).json({
           error: 'ID INVALIDO'     
           })}
       let { pid } = req.params;
       let validpid = idValid(pid, res);
       if (validpid) {
-        return res.status(400).json({
+        return res.status(404).json({
           error: 'ID INVALIDO'
         });
       }
@@ -82,7 +83,7 @@ export class CartsController {
   
       if(req.user.rol == "premiun"){
         if(req.user.email == product.owner){
-          return res.status(400).json({
+          return res.status(403).json({
             error: 'No puedes agregar productos creados por ti'});
         } 
       }
@@ -106,12 +107,12 @@ export class CartsController {
     try {
       let { title } = req.body;
       if (!title) {
-        return res.status(404).json({error: 'Coloque un titulo'})
+        return res.status(403).json({error: 'Coloque un titulo'})
       }
 
       let createCart = await cartsService.createCart(title);
       if (!createCart) {
-        return res.status(404).json({ error: "error al crear" });
+        return res.status(500).json({ error: "error al crear" });
       }
 
       io.emit("listCarts", await cartsService.getCarts());
@@ -126,25 +127,21 @@ export class CartsController {
       let { cid } = req.params;
       let valid = idValid(cid, res);
       if (valid) {
-        console.log("cid invalido");
-        return null;
+        return res.status(404).json({ error: "ID invalido" });
       }
       let { pid } = req.params;
       let validpid = idValid(pid, res);
       if (validpid) {
-        console.log("pid invalido");
-        return null;
+        return res.status(404).json({ error: "ID invalido" });
       }
       const product = await productsService.getProductById(pid);
       if (!product) {
-        console.log("error en recuperacion de producto");
-        return null;
+        return res.status(404).json({ error: "error al recuperar producto" });
       }
   
       let cartMod = await cartsService.deleteProductInCart(cid, product);
       if (!cartMod) {
-        console.log("fallo el borrado de producto");
-        return null;
+        return res.status(404).json({ error: "Producto inexistente en carrito. ERROR" });
       }
       console.log("carro modificado: " + cartMod);
       return res.status(200).json({ cartMod });
@@ -158,14 +155,12 @@ static async deleteAllProductsInCart(req,res){
     let { cid } = req.params;
     let valid = idValid(cid, res);
     if (valid) {
-      console.log("cid invalido");
-      return null;
+      return res.status(404).json({ error: "ID invalido" });
     }
 
     let cartMod = await cartsService.deleteAllProductsInCart(cid);
     if (!cartMod) {
-      console.log("fallo el borrado de producto");
-      return null;
+      return res.status(404).json({ error: "Inexistencia de productos en carrito. Error" });
     }
     console.log("carro modificado: " + cartMod);
     return res.status(200).json({ cartMod });
@@ -179,18 +174,18 @@ static async deleteAllProductsInCart(req,res){
       let { id } = req.params;
       let valid = idValid(id);
       if (valid) {
-        return null;
+        return res.status(404).json({ error: "ID invalido" });
       }
   
       console.log('body en router: '+req.body)
   
       if (req.body._id) {
-        return res.status(404).json({ error: "no se puede modificar la propiedad _id" });
+        return res.status(403).json({ error: "no se puede modificar la propiedad _id" });
       }
   
       let putCart = await cartsService.updateCart(id,req.body);
       if (!putCart) {
-        res.status(404).json({ error: "error al modificar" });
+        res.status(500).json({ error: "error al modificar" });
         return null;
       }
       io.emit("listCarts", await cartsService.getCarts());
@@ -205,35 +200,32 @@ static async modifiedProductInCart(req,res){
     let { cid } = req.params;
     let valid = idValid(cid, res);
     if (valid) {
-      console.log("cid invalido");
-      return null;
+      return res.status(404).json({ error: "ID invalido" });
     }
     let { pid } = req.params;
     let validpid = idValid(pid, res);
     if (validpid) {
-      console.log("pid invalido");
-      return null;
+      return res.status(404).json({ error: "ID invalido" });
     }
 
     let quantity
     if(req.body.quantity && Number(req.body.quantity)> 0){
       quantity = (req.body.quantity)
     }else{ 
-      return res.status(404).json({error: 'Debes colocar una cantidad en numero y mayor a 0'})
+      return res.status(403).json({error: 'Debes colocar una cantidad en numero y mayor a 0'})
     }
 
     console.log('quantity: ' + quantity)
 
     const product = await productsService.getProductById(pid);
     if (!product) {
-      console.log("error en recuperacion de producto");
-      return null;
+      return res.status(404).json({ error: "PRODUCTO INEXISTENTE EN CARRITO" });
+
     }
 
     let cartMod = await cartsService.modifiedProductInCart(cid, product, quantity);
     if (!cartMod) {
-      console.log("fallo la modificacion de producto");
-      return null;
+      return res.status(500).json({ error: "Algo salio mal- Intente mas tarde" });
     }
     console.log("carro modificado: " + cartMod);
     return res.status(200).json({ cartMod });
@@ -248,20 +240,17 @@ static async confirmBuy(req, res) {
     let { cid } = req.params;
     let valid = idValid(cid, res);
     if (valid) {
-      console.log("cid invalido");
-      return null;
+      return res.status(404).json({ error: "ID invalido" });
     }
 
     let cart = await cartsService.getCartById(cid);
 
     if (!cart) {
-      console.log('Fallo al obtener el carrito');
-      return null;
+      return res.status(404).json({ error: "Error al recuperar el carrito" });
     }
 
     if (!cart.products || cart.products.length === 0) {
-      console.log('El carrito está vacío');
-      return null;
+      return res.status(403).json({ error: "Carrito Vacio" });
     }
 
     let prodOK = [];
@@ -279,8 +268,7 @@ static async confirmBuy(req, res) {
         prodOK.push(p);
         let prodMod = await productsService.updateProduct(p.product._id, { stock: stock });
         if (!prodMod) {
-          console.log('Error al actualizar stock');
-          return null;
+          return res.status(500).json({ error: "ERROR INTERNO AL ACTUALIZAR STOCK" });
         }
       }
     }
@@ -288,8 +276,7 @@ static async confirmBuy(req, res) {
     for (const prod of prodOK) {
       let clearCart = await cartsService.deleteProductInCart(cid, prod.product._id);
       if (!clearCart) {
-        console.log('Error al eliminar producto del carrito');
-        return null;
+        return res.status(500).json({ error: "ERROR AL ACTUALIZAR CARRITO" });
       }
     }
 
@@ -302,11 +289,23 @@ static async confirmBuy(req, res) {
     let ticket = await ticketService.createTicket({code: v4(),amount:total, purchaser: user.email});
     req.ticket =ticket
     if (!ticket) {
-      console.log('Error al crear el ticket');
-      return null;
+      return res.status(500).json({ error: "error al generar ticket" });
     }
     
-    return res.status(200).json({ ticket:ticket });
+    let message = `Informe de compra
+    Total: ${total}
+    Productos finales:
+    ${prodOK.map(prod => `Cantidad: ${prod.quantity}\nTitulo: <strong>${prod.product.title}</strong>\nSubtotal: ${prod.subtotal}`).join('\n\n')}
+    Para mas informacion o ante algun eventual incoveniente, comunicarse con un Administrador`;
+   
+
+
+     let rta = await sendMail(user.email, "Confirmacion de compra", message)
+     if(rta.accepted.length > 0){
+       return res.status(200).json({ ticket:ticket });
+      }else{
+      return res.status(500).json({error: 'Error interno para finalizar la compra, Contacte urgente un Administrador'})
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message });
